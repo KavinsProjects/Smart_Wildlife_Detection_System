@@ -1,0 +1,191 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Animal Detector - Smart Wildlife Detection</title>
+    <link rel="stylesheet" href="../static/css/home.css">
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+</head>
+<body>
+    <!-- Navigation -->
+    <nav class="navbar">
+        <div class="nav-container">
+            <a href="/" class="logo">
+                <img src="{% static 'images/logo1.webp' %}" alt="AI Animal Detector Logo" class="logo-img">
+                <span>Animal Detector</span>
+            </a>
+            <div class="nav-links">
+                <a href="{% url 'features' %}">Features</a>
+                <a href="{% url 'howitswork' %}">How It Works</a>
+                <a href="{% url 'dashboard' %}">Dashboard</a>
+                <a href="{% url 'contact' %}">Contact</a>
+                <a href="{% url 'login' %}" class="login-btn">Login</a>
+                <a href="{% url 'signup' %}" class="signup-btn">Sign Up</a>
+            </div>
+            <div class="menu-toggle">
+                <i class="fas fa-bars"></i>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <section class="hero">
+        <div class="hero-container">
+            <div class="hero-content">
+                <h1>Smart Wildlife Detection Using AI</h1>
+                <p>Detect and monitor wildlife in real-time with our advanced AI-powered system. Perfect for researchers, conservationists, and wildlife enthusiasts.</p>
+                <div class="hero-buttons">
+                    <a href="{% url 'login' %}" class="primary-btn">Get Started</a>
+                    
+                </div>
+            </div>
+            <div class="hero-image">
+                <img src="../static/images/elephant2.jpg" alt="Wildlife Detection">
+            </div>
+        </div>
+    </section>
+
+    <!-- Features Section -->
+    <section id="features" class="features">
+        <div class="section-container">
+            <h2>Why Choose Animal Detector?</h2>
+            <div class="features-grid">
+                <div class="feature-card">
+                    <i class="fas fa-camera"></i>
+                    <h3>Real-time Detection</h3>
+                    <p>Instant wildlife detection and classification using advanced AI algorithms.</p>
+                </div>
+                <div class="feature-card">
+                    <i class="fas fa-chart-line"></i>
+                    <h3>Analytics Dashboard</h3>
+                    <p>Comprehensive analytics and insights about wildlife activity in your area.</p>
+                </div>
+                <div class="feature-card">
+                    <i class="fas fa-mobile-alt"></i>
+                    <h3>Mobile Friendly</h3>
+                    <p>Access your detection data anywhere, anytime from any device.</p>
+                </div>
+                <div class="feature-card">
+                    <i class="fas fa-bell"></i>
+                    <h3>Instant Alerts</h3>
+                    <p>Get notified immediately when specific animals are detected.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- How It Works -->
+    <section id="how-it-works" class="how-it-works">
+        <div class="section-container">
+            <h2>How It Works</h2>
+            <div class="steps">
+                <div class="step">
+                    <div class="step-number">1</div>
+                    <h3>Set Up Your Camera</h3>
+                    <p>Connect your wildlife camera to our system</p>
+                </div>
+                <div class="step">
+                    <div class="step-number">2</div>
+                    <h3>AI Detection</h3>
+                    <p>Our AI analyzes the footage in real-time</p>
+                </div>
+                <div class="step">
+                    <div class="step-number">3</div>
+                    <h3>Get Insights</h3>
+                    <p>View detailed reports and analytics</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Testimonials -->
+    <section class="testimonials">
+        <div class="section-container">
+            <h2>What Our Users Say</h2>
+            <div class="testimonials-grid">
+                <div class="testimonial-card">
+                    <div class="testimonial-content">
+                        <p>"The best wildlife detection system I've used. It's incredibly accurate and easy to use."</p>
+                    </div>
+                    <div class="testimonial-author">
+                        <img src="../static/images/james.png" alt="User">
+                        <div class="author-info">
+                            <h4>James Bond</h4>
+                            <p>Wildlife Researcher</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="testimonial-card">
+                    <div class="testimonial-content">
+                        <p>"Changed how we monitor wildlife in our conservation area. Highly recommended!"</p>
+                    </div>
+                    <div class="testimonial-author">
+                        <img src="../static/images/wick.png" alt="User">
+                        <div class="author-info">
+                            <h4>John wick</h4>
+                            <p>Conservation Manager</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- CTA Section -->
+    <section class="cta">
+        <div class="section-container">
+            <h2>Ready to Start Detecting?</h2>
+            
+            <a href="{% url 'login' %}" class="primary-btn">Get Started Now</a>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="footer-container">
+            <div class="footer-content">
+                <div class="footer-section">
+                    <h3>Animal Detector</h3>
+                    <p>Smart wildlife detection using advanced AI technology.</p>
+                </div>
+                <div class="footer-section">
+                    <h3>Quick Links</h3>
+                    <a href="#features">Features</a>
+                    <a href="#how-it-works">How It Works</a>
+                    <a href="#pricing">Pricing</a>
+                    <a href="#contact">Contact</a>
+                </div>
+                <div class="footer-section">
+                    <h3>Contact Us</h3>
+                    <p>Email: info@animaldetector.com</p>
+                    <p>Phone: (555) 123-4567</p>
+                </div>
+                <div class="footer-section">
+                    <h3>Follow Us</h3>
+                    <div class="social-links">
+                        <a href="#"><i class="fab fa-facebook"></i></a>
+                        <a href="#"><i class="fab fa-twitter"></i></a>
+                        <a href="#"><i class="fab fa-linkedin"></i></a>
+                        <a href="#"><i class="fab fa-instagram"></i></a>
+                    </div>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p>&copy; 2024 Animal Detector. All rights reserved.</p>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        // Mobile menu toggle
+        document.querySelector('.menu-toggle').addEventListener('click', function() {
+            document.querySelector('.nav-links').classList.toggle('active');
+        });
+    </script>
+</body>
+</html>

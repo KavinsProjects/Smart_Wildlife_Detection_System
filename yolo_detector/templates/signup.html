@@ -1,0 +1,136 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sign Up - Animal Detector</title>
+    <link rel="stylesheet" href="../static/css/signup.css">
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+</head>
+<body>
+    <div class="signup-container">
+        <div class="signup-card">
+            <div class="signup-header">
+                <a href="/" class="logo">
+                    <img src="{% static 'images/logo1.webp' %}" alt="AI Animal Detector Logo" class="logo-img">
+                <span>Animal Detector</span>
+                </a>
+                <h1>Create Account</h1>
+                <p>Join our wildlife detection community</p>
+            </div>
+
+            {% if messages %}
+            <div class="messages">
+                {% for message in messages %}
+                <div class="message {% if message.tags %}{{ message.tags }}{% endif %}">
+                    {{ message }}
+                </div>
+                {% endfor %}
+            </div>
+            {% endif %}
+
+            <form class="signup-form" action="{% url 'signup' %}" method="POST">
+                {% csrf_token %}
+                
+
+                <div class="form-row">
+                    <div class="form-group">
+                        <div class="input-group">
+                            <i class="fas fa-user"></i>
+                            {{form.first_name}}
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <div class="input-group">
+                            <i class="fas fa-user"></i>
+                            {{form.last_name}}
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <div class="input-group">
+                            <i class="fas fa-envelope"></i>
+                            {{form.email}}
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <div class="input-group">
+                            <i class="fas fa-lock"></i>
+                            {{form.password1}}
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <div class="input-group">
+                            <i class="fas fa-lock"></i>
+                            {{form.password2}}
+                        </div>
+                        {{form.errors}}
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label class="terms-checkbox">
+                        <input type="checkbox" name="terms" required>
+                        <span>I agree to the <a href="/terms">Terms of Service</a> and <a href="/privacy">Privacy Policy</a></span>
+                    </label>
+                </div>
+
+                <button type="submit" class="signup-button">
+                    <span>Create Account</span>
+                    <i class="fas fa-arrow-right"></i>
+                </button>
+
+                
+
+                
+
+                <p class="login-link">
+                    Already have an account? <a href="{% url 'login' %}">Login</a>
+                </p>
+            </form>
+        </div>
+
+        <div class="signup-image">
+            <img src="{% static 'images/login.jpg' %}" alt="Wildlife">
+            <div class="image-overlay">
+                <h2>Join Our Community</h2>
+                <p>Help us protect and monitor wildlife using cutting-edge AI technology.</p>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Toggle password visibility
+        document.querySelectorAll('.toggle-password').forEach(button => {
+            button.addEventListener('click', function() {
+                const passwordInput = this.parentElement.querySelector('input');
+                const icon = this.querySelector('i');
+                
+                if (passwordInput.type === 'password') {
+                    passwordInput.type = 'text';
+                    icon.classList.remove('fa-eye');
+                    icon.classList.add('fa-eye-slash');
+                } else {
+                    passwordInput.type = 'password';
+                    icon.classList.remove('fa-eye-slash');
+                    icon.classList.add('fa-eye');
+                }
+            });
+        });
+
+        // Password match validation
+        document.querySelector('.signup-form').addEventListener('submit', function(e) {
+            const password = document.querySelector('input[name="password"]').value;
+            const confirmPassword = document.querySelector('input[name="confirm_password"]').value;
+
+            if (password !== confirmPassword) {
+                e.preventDefault();
+                alert('Passwords do not match!');
+            }
+        });
+    </script>
+</body>
+</html>

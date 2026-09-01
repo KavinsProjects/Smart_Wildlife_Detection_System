@@ -1,0 +1,10 @@
+cd C:\Users\kavin\Downloads\yolo_test\yolo_test
+.\.venv\Scripts\Activate.ps1
+python manage.py migrate
+python manage.py runserver
+
+System: PostgreSQL
+Server: db
+Username: kavinn
+Password: db@kavin2005
+Database: yolo_animal

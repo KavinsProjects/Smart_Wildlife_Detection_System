@@ -1,0 +1,771 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="utf-8">
+  <meta content="width=device-width, initial-scale=1.0" name="viewport">
+
+  <title>Guidelines & Safety Tips - Forest Department of Tamil Nadu</title>
+  <meta content="" name="description">
+  <meta content="" name="keywords">
+
+  <!-- Favicons -->
+  <link href="assets/img/favicon.png" rel="icon">
+  <link href="assets/img/apple-touch-icon.png" rel="apple-touch-icon">
+
+  <!-- Google Fonts -->
+  <link href="https://fonts.gstatic.com" rel="preconnect">
+  <link href="https://fonts.googleapis.com/css?family=Open+Sans:300,300i,400,400i,600,600i,700,700i|Nunito:300,300i,400,400i,600,600i,700,700i|Poppins:300,300i,400,400i,500,500i,600,600i,700,700i" rel="stylesheet">
+
+  <!-- Vendor CSS Files -->
+  <link href="{% static 'vendor/bootstrap/css/bootstrap.min.css' %}" rel="stylesheet">
+<link href="{% static 'vendor/bootstrap-icons/bootstrap-icons.css' %}" rel="stylesheet">
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" crossorigin=""/>
+
+  <!-- Template Main CSS File -->
+  <link href="{% static 'css/dashboard.css' %}" rel="stylesheet">
+
+  <style>
+    /* Header styles matching TN Forest Department website */
+    .header {
+      background: #45a049;
+      padding: 10px 0;
+      box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    }
+
+    .header .d-flex {
+      width: 100%;
+      justify-content: flex-start;
+      padding: 0 20px;
+      gap: 15px;
+    }
+
+    .header .logo {
+      display: flex;
+      align-items: center;
+      gap: 15px;
+      margin-left: 15px;
+    }
+
+    .header .logo img {
+      max-height: 60px;
+      object-fit: contain;
+    }
+
+    .header .logo span {
+      font-size: 1.2rem;
+      white-space: nowrap;
+      color: #ffffff;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+
+    .header .toggle-sidebar-btn {
+      color: #ffffff;
+      font-size: 1.5rem;
+      margin-right: 15px;
+    }
+
+    .header-nav {
+      margin-left: auto;
+    }
+
+    .header-nav .nav-link {
+      color: #ffffff;
+      padding: 0.5rem 1rem;
+      font-weight: 500;
+    }
+
+    .header-nav .nav-link:hover {
+      color: #90EE90;
+    }
+
+    .header-nav .dropdown-menu {
+      background: #ffffff;
+      border: none;
+      box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    }
+
+    .header-nav .dropdown-item {
+      color: #333;
+      padding: 0.5rem 1rem;
+    }
+
+    .header-nav .dropdown-item:hover {
+      background: #f8f9fa;
+      color: #1a472a;
+    }
+
+    .header-nav .badge {
+      background: #ff4444;
+      color: #ffffff;
+    }
+
+    /* Sidebar menu styles */
+    .sidebar .nav-item .nav-link {
+      color: #000000;
+      font-weight: 500;
+      transition: all 0.3s ease;
+    }
+
+    .sidebar .nav-item .nav-link:hover,
+    .sidebar .nav-item .nav-link.active {
+      color: #1a472a;
+      background: rgba(26, 71, 42, 0.1);
+    }
+
+    .sidebar .nav-item .nav-link i {
+      color: #000000;
+      transition: all 0.3s ease;
+    }
+
+    .sidebar .nav-item .nav-link:hover i,
+    .sidebar .nav-item .nav-link.active i {
+      color: #1a472a;
+    }
+
+    /* Footer styles */
+    .footer {
+      position: relative;
+      left: 0;
+      bottom: 0;
+      width: 100%;
+      padding: 20px 0;
+      background-color: #ffffff;
+      color: #012970;
+      font-size: 14px;
+      box-shadow: 0 -2px 10px rgba(0,0,0,0.1);
+      border-top: 1px solid rgba(0,0,0,0.05);
+    }
+
+    .footer .copyright {
+      text-align: center;
+    }
+
+    .footer .copyright strong {
+      font-weight: 600;
+    }
+
+    .footer .copyright span {
+      color: #1a472a;
+    }
+
+    @media (max-width: 575px) {
+      .footer {
+        padding: 15px 0;
+      }
+    }
+
+    /* Adjust main content to prevent footer overlap */
+    .main {
+      padding: 20px 30px;
+      margin-bottom: 60px;
+    }
+
+    @media (max-width: 1199px) {
+      .main {
+        padding: 20px;
+      }
+    }
+
+    /* Back to top button styling */
+    .back-to-top {
+      position: fixed;
+      visibility: hidden;
+      opacity: 0;
+      right: 15px;
+      bottom: 85px;  /* Positioned above footer */
+      z-index: 998;
+      background: #1a472a;
+      width: 40px;
+      height: 40px;
+      border-radius: 4px;
+      transition: all 0.4s;
+    }
+
+    .back-to-top i {
+      font-size: 24px;
+      color: #fff;
+      line-height: 0;
+    }
+
+    .back-to-top:hover {
+      background: #2ecc71;
+      color: #fff;
+    }
+
+    .back-to-top.active {
+      visibility: visible;
+      opacity: 1;
+    }
+
+    .guidelines-card {
+      border: none;
+      border-radius: 15px;
+      box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+      margin-bottom: 30px;
+      transition: all 0.3s ease;
+    }
+
+    .guidelines-card:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 8px 25px rgba(0,0,0,0.15);
+    }
+
+    .guidelines-card .card-title {
+      color: #1a472a;
+      border-bottom: 2px solid #2ecc71;
+      padding-bottom: 10px;
+      margin-bottom: 20px;
+      font-weight: 700;
+    }
+
+    .guidelines-list {
+      list-style: none;
+      padding-left: 0;
+    }
+
+    .guidelines-list li {
+      padding: 10px 0;
+      border-bottom: 1px solid #f0f0f0;
+      display: flex;
+      align-items: start;
+      gap: 10px;
+    }
+
+    .guidelines-list li i {
+      color: #2ecc71;
+      font-size: 1.2rem;
+      margin-top: 3px;
+    }
+
+    .animal-icon {
+      font-size: 2rem;
+      color: #1a472a;
+      margin-bottom: 15px;
+    }
+
+    .emergency-card {
+      background: linear-gradient(135deg, #ff6b6b, #ee5253);
+      color: white;
+    }
+
+    .emergency-card .card-title {
+      color: white;
+      border-bottom-color: rgba(255,255,255,0.3);
+    }
+
+    /* Remove all enhanced emergency contact styles */
+  </style>
+
+  
+</head>
+
+<body>
+
+  <!-- ======= Header ======= -->
+  <header id="header" class="header fixed-top d-flex align-items-center">
+    <div class="d-flex align-items-center">
+      <i class="bi bi-list toggle-sidebar-btn text-white"></i>
+      <a href="{% url 'home' %}" class="logo d-flex align-items-center">
+        <img src="{% static 'images/logo1.webp' %}" alt="AI Animal Detector Logo" class="logo-img">
+        <span>Animal Detector</span>
+      </a>
+    </div>
+
+    <nav class="header-nav ms-auto">
+      <ul class="d-flex align-items-center">
+
+        <li class="nav-item d-block d-lg-none">
+          <a class="nav-link nav-icon search-bar-toggle " href="#">
+            <i class="bi bi-search"></i>
+          </a>
+        </li><!-- End Search Icon-->
+
+        <li class="nav-item dropdown">
+
+        
+
+          <ul class="dropdown-menu dropdown-menu-end dropdown-menu-arrow notifications">
+            <li class="dropdown-header">
+              You have 4 new notifications
+              <a href="#"><span class="badge rounded-pill bg-primary p-2 ms-2">View all</span></a>
+            </li>
+            <li>
+              <hr class="dropdown-divider">
+            </li>
+
+            <li class="notification-item">
+              <i class="bi bi-exclamation-circle text-warning"></i>
+              <div>
+                <h4>Lorem Ipsum</h4>
+                <p>Quae dolorem earum veritatis oditseno</p>
+                <p>30 min. ago</p>
+              </div>
+            </li>
+            <li>
+              <hr class="dropdown-divider">
+            </li>
+
+            <li class="notification-item">
+              <i class="bi bi-x-circle text-danger"></i>
+              <div>
+                <h4>Atque rerum nesciunt</h4>
+                <p>Quae dolorem earum veritatis oditseno</p>
+                <p>1 hr. ago</p>
+              </div>
+            </li>
+
+            <li>
+              <hr class="dropdown-divider">
+            </li>
+
+            <li class="notification-item">
+              <i class="bi bi-check-circle text-success"></i>
+              <div>
+                <h4>Sit rerum fuga</h4>
+                <p>Quae dolorem earum veritatis oditseno</p>
+                <p>2 hrs. ago</p>
+              </div>
+            </li>
+
+            <li>
+              <hr class="dropdown-divider">
+            </li>
+
+            <li class="notification-item">
+              <i class="bi bi-info-circle text-primary"></i>
+              <div>
+                <h4>Dicta reprehenderit</h4>
+                <p>Quae dolorem earum veritatis oditseno</p>
+                <p>4 hrs. ago</p>
+              </div>
+            </li>
+
+            <li>
+              <hr class="dropdown-divider">
+            </li>
+            <li class="dropdown-footer">
+              <a href="#">Show all notifications</a>
+            </li>
+
+          </ul><!-- End Notification Dropdown Items -->
+
+        </li><!-- End Notification Nav -->
+
+        <li class="nav-item dropdown">
+
+          <li class="nav-item dropdown">
+            <a class="nav-link nav-icon" href="#" data-bs-toggle="dropdown">
+              <i class="bi bi-bell"></i>
+              <span class="badge bg-danger badge-number">5</span>
+            </a><!-- End Notification Icon -->
+  
+            <ul class="dropdown-menu dropdown-menu-end dropdown-menu-arrow notifications">
+              <li class="dropdown-header">
+                Wildlife Awareness Alerts
+                <a href="#"><span class="badge rounded-pill bg-success p-2 ms-2">View all</span></a>
+              </li>
+  
+              <!-- General Wildlife Awareness -->
+              <li class="notification-item">
+                <i class="bi bi-tree-fill text-success" style="color: #145a32 !important;"></i>
+                <div>
+                  <h4>Protect Our Wildlife! 🌿</h4>
+                  <p>Coimbatore is home to elephants, leopards, and rare birds. Let's protect them by keeping our forests clean!</p>
+                  <p class="text-muted small">#SaveWildlife</p>
+                </div>
+              </li>
+  
+              <li>
+                <hr class="dropdown-divider">
+              </li>
+  
+              <!-- Human-Wildlife Conflict Alert -->
+              <li class="notification-item">
+                <i class="bi bi-exclamation-triangle-fill text-warning" style="color: #b7950b !important;"></i>
+                <div>
+                  <h4>Elephant Crossing Alert! 🐘</h4>
+                  <p>Drive slowly near forest areas like Anaikatti & Madukkarai. Let's respect their space!</p>
+                  <p class="text-muted small">30 min ago</p>
+                </div>
+              </li>
+  
+              <li>
+                <hr class="dropdown-divider">
+              </li>
+  
+              <!-- Environmental Protection Alert -->
+              <li class="notification-item">
+                <i class="bi bi-shield-fill-exclamation text-danger" style="color: #922b21 !important;"></i>
+                <div>
+                  <h4>Forest Fire Risk Alert! 🚫🔥</h4>
+                  <p>High risk of forest fires. Avoid throwing cigarette butts or lighting campfires in protected areas.</p>
+                  <p class="text-muted small">1 hr ago</p>
+                </div>
+              </li>
+  
+              <li>
+                <hr class="dropdown-divider">
+              </li>
+  
+              <!-- Event Notification -->
+              <li class="notification-item">
+                <i class="bi bi-calendar-event text-primary" style="color: #1a5f7a !important;"></i>
+                <div>
+                  <h4>Wildlife Awareness Camp</h4>
+                  <p>Join us this weekend at Coimbatore Forest Range for an exciting session on local wildlife!</p>
+                  <p class="text-muted small">2 hrs ago</p>
+                </div>
+              </li>
+  
+              <li>
+                <hr class="dropdown-divider">
+              </li>
+  
+              <!-- Wildlife Crime Alert -->
+              <li class="notification-item">
+                <i class="bi bi-telephone-fill text-danger" style="color: #7b241c !important;"></i>
+                <div>
+                  <h4>Report Wildlife Crime</h4>
+                  <p>See something suspicious? Call our 24/7 helpline: 1800-425-1314</p>
+                  <p class="text-muted small">Always active</p>
+                </div>
+              </li>
+  
+              <li>
+                <hr class="dropdown-divider">
+              </li>
+  
+              <li class="dropdown-footer">
+                <a href="wildlife_awareness.html">Show all notifications</a>
+              </li>
+            </ul><!-- End Notification Dropdown Items -->
+  
+          </li><!-- End Notification Nav -->
+
+      </ul>
+    </nav><!-- End Icons Navigation -->
+
+  </header><!-- End Header -->
+
+  <!-- ======= Sidebar ======= -->
+  <aside id="sidebar" class="sidebar">
+
+    <ul class="sidebar-nav" id="sidebar-nav">
+
+      <li class="nav-item">
+        <a class="nav-link" href="{% url 'dashboard' %}">
+          <i class="bi bi-house-door"></i>
+          <span>Home</span>
+        </a>
+      </li><!-- End Home Nav -->
+
+     
+
+      <li class="nav-item">
+        <a class="nav-link" href="{% url 'reportincident' %}">
+          <i class="bi bi-journal-plus"></i>
+          <span>Report Incident</span>
+        </a>
+      </li><!-- End Report Incident Nav -->
+
+      <li class="nav-item">
+        <a class="nav-link" href="{% url 'contactauthorities' %}">
+          <i class="bi bi-telephone"></i>
+          <span>Contact Authorities</span>
+        </a>
+      </li><!-- End Contact Authorities Nav -->
+
+      <li class="nav-item">
+        <a class="nav-link" href="{% url 'guidelines' %}">
+          <i class="bi bi-shield-check"></i>
+          <span>Guidelines & Safety Tips</span>
+        </a>
+      </li><!-- End Guidelines Nav -->
+
+    </ul>
+
+  </aside><!-- End Sidebar-->
+
+  <main id="main" class="main">
+    <div class="pagetitle">
+      <h1>Guidelines & Safety Tips – Tamil Nadu</h1>
+      <h4 class="text-muted">Special Focus: Coimbatore Region</h4>
+      <nav>
+        <ol class="breadcrumb">
+          <li class="breadcrumb-item"><a href="{% url 'dashboard' %}">Home</a></li>
+          <li class="breadcrumb-item active">Wildlife Safety Guidelines</li>
+        </ol>
+      </nav>
+    </div>
+
+    <section class="section">
+      <div class="row">
+        <!-- Regional Context Card -->
+        <div class="col-12">
+          <div class="card guidelines-card">
+            <div class="card-body">
+              <h3 class="card-title">
+                <i class="bi bi-geo-alt animal-icon"></i>
+                Wildlife Conflict in Coimbatore
+              </h3>
+              <p class="text-muted">Coimbatore, situated near the Western Ghats, experiences frequent human-wildlife interactions. Here are the most common wildlife encounters in different areas:</p>
+              
+              <div class="row mt-4">
+                <div class="col-md-3">
+                  <div class="d-flex align-items-start mb-3">
+                    <i class="bi bi-elephant fs-2 me-2 text-success"></i>
+                    <div>
+                      <h5>Elephants</h5>
+                      <p class="small">Periyanaickenpalayam, Anaikatti, Madukkarai, Thadagam, Boluvampatti, Sirumugai</p>
+                    </div>
+                  </div>
+                </div>
+                <div class="col-md-3">
+                  <div class="d-flex align-items-start mb-3">
+                    <i class="bi bi-lightning fs-2 me-2 text-warning"></i>
+                    <div>
+                      <h5>Leopards</h5>
+                      <p class="small">Thondamuthur, Karamadai, Mettupalayam, Anaikatti, Narasipuram</p>
+                    </div>
+                  </div>
+                </div>
+                <div class="col-md-3">
+                  <div class="d-flex align-items-start mb-3">
+                    <i class="bi bi-tree fs-2 me-2 text-primary"></i>
+                    <div>
+                      <h5>Monkeys</h5>
+                      <p class="small">Marudhamalai, Perur, Isha, Vellingiri Hills, Vadavalli</p>
+                    </div>
+                  </div>
+                </div>
+                <div class="col-md-3">
+                  <div class="d-flex align-items-start mb-3">
+                    <i class="bi bi-shield fs-2 me-2 text-danger"></i>
+                    <div>
+                      <h5>Wild Boars</h5>
+                      <p class="small">Siruvani, Thondamuthur, Kanuvai, Mettupalayam, Sirumugai</p>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Elephant Guidelines -->
+        <div class="col-lg-6">
+          <div class="card guidelines-card">
+            <div class="card-body">
+              <h3 class="card-title">
+                <i class="bi bi-elephant animal-icon"></i>
+                Elephant Encounters
+              </h3>
+              <ul class="guidelines-list">
+                <li><i class="bi bi-shield-check"></i> Maintain minimum 100 meters distance</li>
+                <li><i class="bi bi-shield-check"></i> Avoid honking or using bright lights at night</li>
+                <li><i class="bi bi-shield-check"></i> Run in zigzag pattern if charged</li>
+                <li><i class="bi bi-shield-check"></i> Use eco-friendly deterrents (chili ropes, bee fences)</li>
+              </ul>
+            </div>
+          </div>
+        </div>
+
+        <!-- Leopard Guidelines -->
+        <div class="col-lg-6">
+          <div class="card guidelines-card">
+            <div class="card-body">
+              <h3 class="card-title">
+                <i class="bi bi-lightning animal-icon"></i>
+                Leopard Encounters
+              </h3>
+              <ul class="guidelines-list">
+                <li><i class="bi bi-shield-check"></i> Stay still and back away slowly</li>
+                <li><i class="bi bi-shield-check"></i> Secure livestock in enclosed spaces at night</li>
+                <li><i class="bi bi-shield-check"></i> Avoid walking alone after dark in foothill areas</li>
+                <li><i class="bi bi-shield-check"></i> Contact TNFD if leopard enters village</li>
+              </ul>
+            </div>
+          </div>
+        </div>
+
+        <!-- Monkey Guidelines -->
+        <div class="col-lg-6">
+          <div class="card guidelines-card">
+            <div class="card-body">
+              <h3 class="card-title">
+                <i class="bi bi-tree animal-icon"></i>
+                Monkey Management
+              </h3>
+              <ul class="guidelines-list">
+                <li><i class="bi bi-shield-check"></i> Never feed monkeys in temple areas</li>
+                <li><i class="bi bi-shield-check"></i> Keep windows closed in prone areas</li>
+                <li><i class="bi bi-shield-check"></i> Use secure dustbins for food waste</li>
+                <li><i class="bi bi-shield-check"></i> Stay calm if confronted</li>
+              </ul>
+            </div>
+          </div>
+        </div>
+
+        <!-- Wild Boar Guidelines -->
+        <div class="col-lg-6">
+          <div class="card guidelines-card">
+            <div class="card-body">
+              <h3 class="card-title">
+                <i class="bi bi-shield animal-icon"></i>
+                Wild Boar Safety
+              </h3>
+              <ul class="guidelines-list">
+                <li><i class="bi bi-shield-check"></i> Don't approach or chase aggressively</li>
+                <li><i class="bi bi-shield-check"></i> Climb to higher ground if attacked</li>
+                <li><i class="bi bi-shield-check"></i> Use solar-powered electric fences for crops</li>
+                <li><i class="bi bi-shield-check"></i> Keep distance and avoid confrontation</li>
+              </ul>
+            </div>
+          </div>
+        </div>
+
+        <!-- Emergency First Aid -->
+        <div class="col-12">
+          <div class="card guidelines-card emergency-card">
+            <div class="card-body">
+              <h3 class="card-title">
+                <i class="bi bi-heart-pulse animal-icon"></i>
+                Regional First-Aid Guidelines
+              </h3>
+              <div class="row">
+                <div class="col-md-4">
+                  <h5>Elephant-Related Injuries</h5>
+                  <ul class="guidelines-list">
+                    <li><i class="bi bi-bandaid"></i> Move victim to safety immediately</li>
+                    <li><i class="bi bi-bandaid"></i> Control bleeding with clean bandage</li>
+                    <li><i class="bi bi-bandaid"></i> Rush to Coimbatore Govt Hospital</li>
+                  </ul>
+                </div>
+                <div class="col-md-4">
+                  <h5>Snake Bites (Anaikatti Area)</h5>
+                  <ul class="guidelines-list">
+                    <li><i class="bi bi-bandaid"></i> Immobilize affected limb</li>
+                    <li><i class="bi bi-bandaid"></i> Don't attempt venom extraction</li>
+                    <li><i class="bi bi-bandaid"></i> Contact Snake Rescue Team</li>
+                  </ul>
+                </div>
+                <div class="col-md-4">
+                  <h5>Leopard/Boar Attacks</h5>
+                  <ul class="guidelines-list">
+                    <li><i class="bi bi-bandaid"></i> Clean wounds with antiseptic</li>
+                    <li><i class="bi bi-bandaid"></i> Get rabies vaccination</li>
+                    <li><i class="bi bi-bandaid"></i> Visit nearest medical center</li>
+                  </ul>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Emergency Contacts -->
+        <div class="col-12">
+          <div class="card guidelines-card">
+            <div class="card-body">
+              <h3 class="card-title">
+                <i class="bi bi-telephone animal-icon"></i>
+                Emergency Helplines - Coimbatore
+              </h3>
+              <div class="row">
+                <div class="col-md-3">
+                  <div class="d-flex align-items-center mb-3">
+                    <i class="bi bi-telephone-fill fs-2 me-2 text-success"></i>
+                    <div>
+                      <h5 class="mb-0">TNFD Wildlife Helpline</h5>
+                      <p class="mb-0"><a href="tel:18004254868" class="text-success text-decoration-none"><strong>1800 425 4868</strong></a></p>
+                    </div>
+                  </div>
+                </div>
+                <div class="col-md-3">
+                  <div class="d-flex align-items-center mb-3">
+                    <i class="bi bi-telephone-fill fs-2 me-2 text-primary"></i>
+                    <div>
+                      <h5 class="mb-0">Forest Division</h5>
+                      <p class="mb-0"><a href="tel:+914222456911" class="text-primary text-decoration-none"><strong>+91 422 245 6911</strong></a></p>
+                    </div>
+                  </div>
+                </div>
+                <div class="col-md-3">
+                  <div class="d-flex align-items-center mb-3">
+                    <i class="bi bi-telephone-fill fs-2 me-2 text-warning"></i>
+                    <div>
+                      <h5 class="mb-0">Wildlife Rescue</h5>
+                      <p class="mb-0"><a href="tel:+919445811894" class="text-warning text-decoration-none"><strong>+91 94458 11894</strong></a></p>
+                    </div>
+                  </div>
+                </div>
+                <div class="col-md-3">
+                  <div class="d-flex align-items-center mb-3">
+                    <i class="bi bi-telephone-fill fs-2 me-2 text-danger"></i>
+                    <div>
+                      <h5 class="mb-0">Emergency Medical</h5>
+                      <p class="mb-0"><a href="tel:108" class="text-danger text-decoration-none"><strong>108</strong></a></p>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </section>
+
+  </main>
+
+
+
+  <a href="#" class="back-to-top d-flex align-items-center justify-content-center"><i class="bi bi-arrow-up-short"></i></a>
+
+  <!-- ======= Footer =======-->
+  <footer id="footer" class="footer">
+    <div class="container">
+      <div class="copyright">
+        &copy; Copyright <strong><span>Tamil Nadu Forest Department</span></strong>. All Rights Reserved
+      </div>
+    </div>
+  </footer><!-- End Footer -->
+
+  
+
+  <!-- Template Main JS File -->
+  <script src="../static/js/main.js"></script>
+
+  <!-- Add these scripts before </body> -->
+  <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+  <script>
+  document.addEventListener('DOMContentLoaded', function() {
+      // Toggle sidebar
+      const toggleSidebarBtn = document.querySelector('.toggle-sidebar-btn');
+      const body = document.querySelector('body');
+      
+      if (toggleSidebarBtn) {
+          toggleSidebarBtn.addEventListener('click', function(e) {
+              e.preventDefault();
+              body.classList.toggle('toggle-sidebar');
+          });
+      }
+
+      // Close sidebar when clicking outside on mobile
+      document.addEventListener('click', function(e) {
+          if (window.innerWidth < 1200) {
+              if (!e.target.closest('.sidebar') && !e.target.closest('.toggle-sidebar-btn')) {
+                  body.classList.remove('toggle-sidebar');
+              }
+          }
+      });
+  });
+  </script>
+
+</body>
+
+</html>

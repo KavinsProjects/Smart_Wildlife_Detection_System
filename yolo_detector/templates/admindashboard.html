@@ -1,0 +1,1865 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="utf-8">
+  <meta content="width=device-width, initial-scale=1.0" name="viewport">
+
+  <title>Code Wizards Admin-Dashboard</title>
+  <meta content="" name="description">
+  <meta content="" name="keywords">
+
+  <!-- Favicons -->
+  <link href="assets/img/favicon.png" rel="icon">
+  <link href="assets/img/apple-touch-icon.png" rel="apple-touch-icon">
+
+  <!-- Google Fonts -->
+  <link href="https://fonts.gstatic.com" rel="preconnect">
+  <link href="https://fonts.googleapis.com/css?family=Open+Sans:300,300i,400,400i,600,600i,700,700i|Nunito:300,300i,400,400i,600,600i,700,700i|Poppins:300,300i,400,400i,500,500i,600,600i,700,700i" rel="stylesheet">
+
+  <!-- Vendor CSS Files -->
+  <link href="{% static 'vendor/bootstrap/css/bootstrap.min.css' %}" rel="stylesheet">
+  <link href="{% static 'vendor/bootstrap-icons/bootstrap-icons.css' %}" rel="stylesheet">
+ 
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" crossorigin=""/>
+  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" crossorigin=""></script>
+  <script src="https://unpkg.com/leaflet.heat@0.2.0/dist/leaflet-heat.js"></script>
+
+  <!-- Template Main CSS File -->
+  <link href="../static/css/admindashboard.css" rel="stylesheet">
+
+  <style>
+    /* Header styles matching TN Forest Department website */
+    .header {
+      background:  #4caf50;
+      padding: 10px 0;
+      box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    }
+
+    .header .d-flex {
+      width: 100%;
+      justify-content: space-between;
+      padding: 0 20px;
+    }
+
+    .header .logo {
+      display: flex;
+      align-items: center;
+      gap: 15px;
+      margin-left: 15px;
+    }
+
+    .header .logo img {
+      max-height: 60px;
+      object-fit: contain;
+    }
+
+    .header .logo span {
+      font-size: 1.2rem;
+      white-space: nowrap;
+      color: #ffffff;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+
+
+    
+    .header .toggle-sidebar-btn {
+      color: #ffffff;
+      font-size: 1.5rem;
+      margin-left: 0;
+      order: -1;
+    }
+
+    .header-nav {
+      margin-left: auto;
+    }
+
+    .header-nav .nav-link {
+      color: #ffffff;
+      padding: 0.5rem 1rem;
+      font-weight: 500;
+    }
+
+    .header-nav .nav-link:hover {
+      color: #90EE90;
+    }
+
+    .header-nav .dropdown-menu {
+      background: #ffffff;
+      border: none;
+      box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    }
+
+    .header-nav .dropdown-item {
+      color: #333;
+      padding: 0.5rem 1rem;
+    }
+
+    .header-nav .dropdown-item:hover {
+      background: #f8f9fa;
+      color: #1a472a;
+    }
+
+    .header-nav .badge {
+      background: #ff4444;
+      color: #ffffff;
+    }
+
+    /* Sidebar menu styles */
+    .sidebar .nav-item .nav-link {
+      color: #000000;
+      font-weight: 500;
+      transition: all 0.3s ease;
+    }
+
+    .sidebar .nav-item .nav-link:hover,
+    .sidebar .nav-item .nav-link.active {
+      color: #1a472a;
+      background: rgba(26, 71, 42, 0.1);
+    }
+
+    .sidebar .nav-item .nav-link i {
+      color: #000000;
+      transition: all 0.3s ease;
+    }
+
+    .sidebar .nav-item .nav-link:hover i,
+    .sidebar .nav-item .nav-link.active i {
+      color: #1a472a;
+    }
+
+    /* Main container min-height to ensure footer stays at bottom */
+    #main {
+      min-height: calc(100vh - 160px); /* Adjust based on header + footer height */
+      padding-bottom: 60px; /* Space for footer */
+    }
+
+    /* Footer styling */
+    .footer {
+      background-color: #000000;
+      color: #ffffff;
+      padding: 20px 0;
+      width: 100%;
+      position: relative;
+      margin-top: auto;
+      text-align: center;
+      z-index: 100;
+    }
+
+    .footer .copyright {
+      margin-bottom: 10px;
+    }
+
+    .footer .credits {
+      font-size: 0.9rem;
+      color: #cccccc;
+    }
+
+    .footer a {
+      color: #4caf50;
+      text-decoration: none;
+      transition: color 0.3s ease;
+    }
+
+    .footer a:hover {
+      color: #66bb6a;
+      text-decoration: underline;
+    }
+
+    .footer strong span {
+      color: #4caf50;
+    }
+
+    /* Wrapper to ensure proper layout */
+    body {
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+    }
+  </style>
+
+  
+</head>
+
+<body>
+
+  <!-- ======= Header ======= -->
+  <header id="header" class="header fixed-top d-flex align-items-center">
+    <div class="d-flex align-items-center justify-content-start">
+      <a href="{% url 'home' %}" class="logo">
+        <img src="{% static 'images/logo1.webp' %}" alt="AI Animal Detector Logo" class="logo-img">
+        <span>Animal Detector</span>
+    </a>
+    </div><!-- End Logo -->
+
+    <i class="bi bi-list toggle-sidebar-btn text-white me-3"></i>
+
+    <nav class="header-nav ms-auto">
+      <ul class="d-flex align-items-center">
+
+       
+          </a>
+        </li><!-- End Search Icon-->
+
+        <li class="nav-item dropdown">
+
+        
+
+          <ul class="dropdown-menu dropdown-menu-end dropdown-menu-arrow notifications">
+            <li class="dropdown-header">
+              You have 4 new notifications
+              <a href="#"><span class="badge rounded-pill bg-primary p-2 ms-2">View all</span></a>
+            </li>
+            <li>
+              <hr class="dropdown-divider">
+            </li>
+
+            <li class="notification-item">
+              <i class="bi bi-exclamation-circle text-warning"></i>
+              <div>
+                <h4>Lorem Ipsum</h4>
+                <p>Quae dolorem earum veritatis oditseno</p>
+                <p>30 min. ago</p>
+              </div>
+            </li>
+            <li>
+              <hr class="dropdown-divider">
+            </li>
+
+            <li class="notification-item">
+              <i class="bi bi-x-circle text-danger"></i>
+              <div>
+                <h4>Atque rerum nesciunt</h4>
+                <p>Quae dolorem earum veritatis oditseno</p>
+                <p>1 hr. ago</p>
+              </div>
+            </li>
+
+            <li>
+              <hr class="dropdown-divider">
+            </li>
+
+            <li class="notification-item">
+              <i class="bi bi-check-circle text-success"></i>
+              <div>
+                <h4>Sit rerum fuga</h4>
+                <p>Quae dolorem earum veritatis oditseno</p>
+                <p>2 hrs. ago</p>
+              </div>
+            </li>
+
+            <li>
+              <hr class="dropdown-divider">
+            </li>
+
+            <li class="notification-item">
+              <i class="bi bi-info-circle text-primary"></i>
+              <div>
+                <h4>Dicta reprehenderit</h4>
+                <p>Quae dolorem earum veritatis oditseno</p>
+                <p>4 hrs. ago</p>
+              </div>
+            </li>
+
+            <li>
+              <hr class="dropdown-divider">
+            </li>
+            <li class="dropdown-footer">
+              <a href="#">Show all notifications</a>
+            </li>
+
+          </ul><!-- End Notification Dropdown Items -->
+
+        </li><!-- End Notification Nav -->
+
+        <li class="nav-item dropdown">
+
+          <a class="nav-link nav-icon" href="#" data-bs-toggle="dropdown">
+            <i class="bi bi-chat-left-text"></i>
+            <span class="badge bg-success badge-number">3</span>
+          </a><!-- End Messages Icon -->
+
+          <ul class="dropdown-menu dropdown-menu-end dropdown-menu-arrow messages">
+            <li class="dropdown-header">
+              You have 3 new public incident reports
+              <a href="alerts.html"><span class="badge rounded-pill bg-primary p-2 ms-2">View all</span></a>
+            </li>
+            <li>
+              <hr class="dropdown-divider">
+            </li>
+
+            <li class="message-item">
+              <a href="#">
+                <img src="assets/img/incident-alert.png" alt="" class="rounded-circle">
+                <div>
+                  <h4>Wild Elephant Sighting</h4>
+                  <p>Spotted 2 elephants near farmland at Vadipatti village, moving towards crops...</p>
+                  <p><i class="bi bi-geo-alt text-primary"></i> Madurai District</p>
+                  <p><i class="bi bi-clock text-secondary"></i> 15 mins ago</p>
+                </div>
+              </a>
+            </li>
+            <li>
+              <hr class="dropdown-divider">
+            </li>
+
+            <li class="message-item">
+              <a href="#">
+                <img src="assets/img/incident-alert.png" alt="" class="rounded-circle">
+                <div>
+                  <h4>Leopard Movement</h4>
+                  <p>Leopard footprints found near water source, close to Kodaikanal residential area...</p>
+                  <p><i class="bi bi-geo-alt text-primary"></i> Dindigul District</p>
+                  <p><i class="bi bi-clock text-secondary"></i> 45 mins ago</p>
+                </div>
+              </a>
+            </li>
+            <li>
+              <hr class="dropdown-divider">
+            </li>
+
+            <li class="message-item">
+              <a href="#">
+                <img src="assets/img/incident-alert.png" alt="" class="rounded-circle">
+                <div>
+                  <h4>Bear Sighting Alert</h4>
+                  <p>Sloth bear with cubs seen near honey collection area in forest periphery...</p>
+                  <p><i class="bi bi-geo-alt text-primary"></i> Theni District</p>
+                  <p><i class="bi bi-clock text-secondary"></i> 1 hour ago</p>
+                </div>
+              </a>
+            </li>
+            <li>
+              <hr class="dropdown-divider">
+            </li>
+
+            <li class="dropdown-footer">
+              <a href="alerts.html">Show all public reports</a>
+            </li>
+
+          </ul><!-- End Messages Dropdown Items -->
+
+          <style>
+            .messages .message-item {
+              padding: 1rem;
+              transition: background-color 0.3s;
+            }
+
+            .messages .message-item:hover {
+              background-color: #f8f9fa;
+            }
+
+            .messages .message-item a {
+              display: flex;
+              gap: 1rem;
+              text-decoration: none;
+              color: inherit;
+            }
+
+            .messages .message-item img {
+              width: 40px;
+              height: 40px;
+              background-color: #e8f5e9;
+              padding: 8px;
+            }
+
+            .messages .message-item h4 {
+              font-size: 0.9rem;
+              font-weight: 600;
+              color: #2c3e50;
+              margin: 0 0 0.3rem 0;
+            }
+
+            .messages .message-item p {
+              font-size: 0.8rem;
+              margin: 0 0 0.2rem 0;
+              color: #64748b;
+              display: flex;
+              align-items: center;
+              gap: 0.3rem;
+            }
+
+            .messages .message-item p:first-of-type {
+              color: #475569;
+              margin-bottom: 0.5rem;
+            }
+
+            .messages .dropdown-header {
+              padding: 1rem;
+              font-size: 0.9rem;
+              font-weight: 600;
+              color: #1e293b;
+            }
+
+            .messages .dropdown-footer {
+              text-align: center;
+              padding: 0.8rem;
+              font-size: 0.85rem;
+              border-top: 1px solid #e2e8f0;
+            }
+
+            .messages .dropdown-footer a {
+              color: #4caf50;
+              text-decoration: none;
+              font-weight: 500;
+            }
+
+            .messages .dropdown-footer a:hover {
+              text-decoration: underline;
+            }
+          </style>
+        </li><!-- End Messages Nav -->
+
+        <li class="nav-item dropdown pe-3">
+
+          
+
+          <ul class="dropdown-menu dropdown-menu-end dropdown-menu-arrow profile">
+            <li class="dropdown-header">
+              <h6>Kevin Anderson</h6>
+              <span>Web Designer</span>
+            </li>
+            <li>
+              <hr class="dropdown-divider">
+            </li>
+
+            <li>
+              <a class="dropdown-item d-flex align-items-center" href="users-profile.html">
+                <i class="bi bi-person"></i>
+                <span>My Profile</span>
+              </a>
+            </li>
+            <li>
+              <hr class="dropdown-divider">
+            </li>
+
+            <li>
+              <a class="dropdown-item d-flex align-items-center" href="users-profile.html">
+                <i class="bi bi-gear"></i>
+                <span>Account Settings</span>
+              </a>
+            </li>
+            <li>
+              <hr class="dropdown-divider">
+            </li>
+
+            <li>
+              <a class="dropdown-item d-flex align-items-center" href="pages-faq.html">
+                <i class="bi bi-question-circle"></i>
+                <span>Need Help?</span>
+              </a>
+            </li>
+            <li>
+              <hr class="dropdown-divider">
+            </li>
+
+            <li>
+              <a class="dropdown-item d-flex align-items-center" href="#">
+                <i class="bi bi-box-arrow-right"></i>
+                <span>Sign Out</span>
+              </a>
+            </li>
+
+          </ul><!-- End Profile Dropdown Items -->
+        </li><!-- End Profile Nav -->
+
+      </ul>
+    </nav><!-- End Icons Navigation -->
+
+  </header><!-- End Header -->
+
+  <!-- ======= Sidebar ======= -->
+  <aside id="sidebar" class="sidebar">
+
+    <ul class="sidebar-nav" id="sidebar-nav">
+
+      <li class="nav-item">
+        <a class="nav-link" href="{% url 'admin-dashboard' %}">
+          <i class="bi bi-grid"></i>
+          <span>Dashboard</span>
+        </a>
+      </li><!-- End Dashboard Nav -->
+
+      <li class="nav-item">
+        <a class="nav-link" href="{% url 'livemonitoring' %}">
+          <i class="bi bi-camera-video"></i>
+          <span>Live Monitoring</span>
+        </a>
+      </li><!-- End Live Monitoring Nav -->
+
+      <li class="nav-item">
+        <a class="nav-link" href="{% url 'alerts' %}">
+          <i class="bi bi-bell"></i>
+          <span>Alerts</span>
+        </a>
+      </li><!-- End Alerts Nav -->
+
+      <li class="nav-item">
+        <a class="nav-link" href="{% url 'analysis' %}">
+          <i class="bi bi-graph-up"></i>
+          <span>Analysis</span>
+        </a>
+      </li>
+
+      <li class="nav-item">
+        <a class="nav-link" href="{% url 'index' %}">
+          <i class="bi bi-search"></i>
+          <span>Detect</span>
+        </a>
+      </li>
+      
+ 
+      
+      <!-- End Analysis Nav -->
+
+      <li class="nav-heading mt-3">Account</li>
+
+      <li class="nav-item">
+        <a class="nav-link" href="#">
+          <i class="bi bi-box-arrow-right"></i>
+          <span>Logout</span>
+        </a>
+      </li><!-- End Logout Nav -->
+
+    </ul>
+
+    <style>
+      .sidebar {
+        min-height: 100vh;
+      }
+
+      .nav-link {
+        color: #000000;
+        font-weight: 500;
+        transition: all 0.3s ease;
+      }
+
+      .nav-link:hover,
+      .nav-link.active {
+        color: #1a472a;
+        background: rgba(26, 71, 42, 0.1);
+      }
+
+      .nav-link i {
+        color: #000000;
+        transition: all 0.3s ease;
+      }
+
+      .nav-link:hover i,
+      .nav-link.active i {
+        color: #1a472a;
+      }
+
+      .nav-heading {
+        font-size: 0.9rem;
+        font-weight: 600;
+        color: #64748b;
+        text-transform: uppercase;
+        padding: 0.5rem 1rem;
+        margin-top: 1rem;
+        border-top: 1px solid #e2e8f0;
+      }
+    </style>
+
+  </aside><!-- End Sidebar-->
+
+  <main id="main" class="main">
+
+    <div class="pagetitle">
+      <h1>Dashboard</h1>
+      <nav>
+        <ol class="breadcrumb">
+          <li class="breadcrumb-item"><a href="index.html">Home</a></li>
+          <li class="breadcrumb-item active">Dashboard</li>
+        </ol>
+      </nav>
+    </div><!-- End Page Title -->
+
+    <section class="section dashboard">
+      <div class="row">
+
+        <!-- Left side columns -->
+        <div class="col-lg-8">
+          <div class="row">
+
+            <!-- Sales Card -->
+            <div class="col-xxl-4 col-md-6">
+              <div class="card info-card sales-card">
+
+                <div class="filter">
+                  <a class="icon" href="#" data-bs-toggle="dropdown"><i class="bi bi-three-dots"></i></a>
+                  <ul class="dropdown-menu dropdown-menu-end dropdown-menu-arrow">
+                    <li class="dropdown-header text-start">
+                      <h6>Filter</h6>
+                    </li>
+
+                    <li><a class="dropdown-item" href="#">Today</a></li>
+                    <li><a class="dropdown-item" href="#">This Month</a></li>
+                    <li><a class="dropdown-item" href="#">This Year</a></li>
+                  </ul>
+                </div>
+
+                <div class="card-body">
+                  <h5 class="card-title">ACTIVE ALERTS <span>| Today</span></h5>
+
+                  <div class="d-flex align-items-center">
+                    <div class="card-icon rounded-circle d-flex align-items-center justify-content-center">
+                      <i class="bi bi-exclamation-triangle"></i>
+                    </div>
+                    <div class="ps-3">
+                      <h6>12</h6>
+                      <span class="text-danger small pt-1 fw-bold">3 High Priority</span>
+                    </div>
+                  </div>
+                </div>
+
+              </div>
+            </div><!-- End Sales Card -->
+
+            <!-- Revenue Card -->
+            <div class="col-xxl-4 col-md-6">
+              <div class="card info-card revenue-card">
+
+                <div class="filter">
+                  <a class="icon" href="#" data-bs-toggle="dropdown"><i class="bi bi-three-dots"></i></a>
+                  <ul class="dropdown-menu dropdown-menu-end dropdown-menu-arrow">
+                    <li class="dropdown-header text-start">
+                      <h6>Filter</h6>
+                    </li>
+
+                    <li><a class="dropdown-item" href="#">Today</a></li>
+                    <li><a class="dropdown-item" href="#">This Month</a></li>
+                    <li><a class="dropdown-item" href="#">This Year</a></li>
+                  </ul>
+                </div>
+
+                <div class="card-body">
+                  <h5 class="card-title">HIGH RISK AREAS <span>| This Month</span></h5>
+
+                  <div class="d-flex align-items-center">
+                    <div class="card-icon rounded-circle d-flex align-items-center justify-content-center">
+                      <i class="bi bi-geo-alt"></i>
+                    </div>
+                    <div class="ps-3">
+                      <h6>8</h6>
+                      <span class="text-danger small pt-1 fw-bold">Critical Zones</span>
+                    </div>
+                  </div>
+                </div>
+
+              </div>
+            </div><!-- End Revenue Card -->
+
+            <!-- Customers Card -->
+            <div class="col-xxl-4 col-xl-12">
+
+              <div class="card info-card customers-card">
+
+                <div class="filter">
+                  <a class="icon" href="#" data-bs-toggle="dropdown"><i class="bi bi-three-dots"></i></a>
+                  <ul class="dropdown-menu dropdown-menu-end dropdown-menu-arrow">
+                    <li class="dropdown-header text-start">
+                      <h6>Filter</h6>
+                    </li>
+
+                    <li><a class="dropdown-item" href="#">Today</a></li>
+                    <li><a class="dropdown-item" href="#">This Month</a></li>
+                    <li><a class="dropdown-item" href="#">This Year</a></li>
+                  </ul>
+                </div>
+
+                <div class="card-body">
+                  <h5 class="card-title">SPECIES TRACKED <span>| This Year</span></h5>
+
+                  <div class="d-flex align-items-center">
+                    <div class="card-icon rounded-circle d-flex align-items-center justify-content-center">
+                      <i class="bi bi-paw"></i>
+                    </div>
+                    <div class="ps-3">
+                      <h6>15</h6>
+                      <span class="text-success small pt-1 fw-bold">Active Tracking</span>
+                    </div>
+                  </div>
+
+                </div>
+              </div>
+
+            </div><!-- End Customers Card -->
+
+            <!-- Reports -->
+            <div class="col-12">
+              <div class="card">
+
+                <div class="filter">
+                  <a class="icon" href="#" data-bs-toggle="dropdown"><i class="bi bi-three-dots"></i></a>
+                  <ul class="dropdown-menu dropdown-menu-end dropdown-menu-arrow">
+                    <li class="dropdown-header text-start">
+                      <h6>Filter</h6>
+                    </li>
+
+                    <li><a class="dropdown-item" href="#">Today</a></li>
+                    <li><a class="dropdown-item" href="#">This Month</a></li>
+                    <li><a class="dropdown-item" href="#">This Year</a></li>
+                  </ul>
+                </div>
+
+                <div class="card-body">
+                  <h5 class="card-title">Forest Operations Command Center <span>| Real-time Overview</span></h5>
+
+                  <div class="monitoring-dashboard">
+                    <!-- Active Incidents Section -->
+                    <div class="dashboard-section">
+                      <div class="section-header">
+                        <h6><i class="bi bi-exclamation-diamond-fill"></i> Active Incidents</h6>
+                        <span class="badge bg-danger">4 Critical</span>
+                          </div>
+                      <div class="incident-cards">
+                        <div class="incident-card critical">
+                          <div class="incident-header">
+                            <span class="incident-type">Human-Elephant Conflict</span>
+                            <span class="time-badge">10 min ago</span>
+                            </div>
+                          <div class="incident-details">
+                            <p class="location"><i class="bi bi-geo-alt"></i> Chengalpattu - Vadakkupattu Village</p>
+                            <p class="description">Herd of 5 elephants near agricultural land</p>
+                          </div>
+                          <div class="response-status">
+                            <span class="status-badge dispatched">
+                              <i class="bi bi-truck"></i> Team Dispatched
+                            </span>
+                            <button class="action-btn">View Details</button>
+                          </div>
+                        </div>
+
+                        <div class="incident-card high">
+                          <div class="incident-header">
+                            <span class="incident-type">Tiger Sighting</span>
+                            <span class="time-badge">25 min ago</span>
+                          </div>
+                          <div class="incident-details">
+                            <p class="location"><i class="bi bi-geo-alt"></i> Mudumalai - Buffer Zone</p>
+                            <p class="description">Tiger spotted near village periphery</p>
+                            </div>
+                          <div class="response-status">
+                            <span class="status-badge monitoring">
+                              <i class="bi bi-camera-video"></i> Under Surveillance
+                            </span>
+                            <button class="action-btn">View Details</button>
+                          </div>
+                        </div>
+                      </div>
+                        </div>
+
+                    <!-- Patrol Status Section -->
+                    <div class="dashboard-row">
+                      <div class="dashboard-col">
+                        <div class="patrol-status">
+                          <div class="section-header">
+                            <h6><i class="bi bi-shield-check"></i> Active Patrols</h6>
+                            <span class="refresh-time">Updated 5 min ago</span>
+                          </div>
+                          <div class="patrol-grid">
+                            <div class="patrol-card">
+                              <div class="patrol-info">
+                                <span class="team-name">Team Alpha</span>
+                                <span class="patrol-badge active">On Duty</span>
+                            </div>
+                              <div class="patrol-location">
+                                <i class="bi bi-geo-alt"></i> Nilgiris East
+                                <span class="patrol-time">4h remaining</span>
+                          </div>
+                              <div class="team-status">
+                                <span><i class="bi bi-people"></i> 4 Rangers</span>
+                                <span><i class="bi bi-truck"></i> 1 Vehicle</span>
+                        </div>
+                      </div>
+
+                            <div class="patrol-card">
+                              <div class="patrol-info">
+                                <span class="team-name">Team Bravo</span>
+                                <span class="patrol-badge active">On Duty</span>
+                          </div>
+                              <div class="patrol-location">
+                                <i class="bi bi-geo-alt"></i> Coimbatore Range
+                                <span class="patrol-time">2h remaining</span>
+                            </div>
+                              <div class="team-status">
+                                <span><i class="bi bi-people"></i> 3 Rangers</span>
+                                <span><i class="bi bi-truck"></i> 1 Vehicle</span>
+                          </div>
+                            </div>
+                          </div>
+                        </div>
+                        </div>
+
+                      <div class="dashboard-col">
+                        <div class="resource-status">
+                          <div class="section-header">
+                            <h6><i class="bi bi-gear"></i> Resource Status</h6>
+                            <button class="refresh-btn"><i class="bi bi-arrow-clockwise"></i></button>
+                          </div>
+                          <div class="resource-grid">
+                            <div class="resource-card">
+                              <div class="resource-icon">
+                                <i class="bi bi-people-fill"></i>
+                            </div>
+                              <div class="resource-info">
+                                <span class="resource-label">Rangers Available</span>
+                                <span class="resource-value">12/15</span>
+                          </div>
+                              <div class="resource-chart">
+                                <div class="chart-bar" style="width: 80%"></div>
+                              </div>
+                        </div>
+
+                            <div class="resource-card">
+                              <div class="resource-icon">
+                                <i class="bi bi-truck"></i>
+                          </div>
+                              <div class="resource-info">
+                                <span class="resource-label">Vehicles Ready</span>
+                                <span class="resource-value">5/6</span>
+                            </div>
+                              <div class="resource-chart">
+                                <div class="chart-bar" style="width: 85%"></div>
+                          </div>
+                        </div>
+
+                            <div class="resource-card">
+                              <div class="resource-icon">
+                                <i class="bi bi-camera"></i>
+                      </div>
+                              <div class="resource-info">
+                                <span class="resource-label">Camera Traps Active</span>
+                                <span class="resource-value">45/50</span>
+                    </div>
+                              <div class="resource-chart">
+                                <div class="chart-bar" style="width: 90%"></div>
+                      </div>
+                      </div>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+
+                    <!-- Quick Actions Section -->
+                    <div class="quick-actions">
+                      <div class="section-header">
+                        <h6><i class="bi bi-lightning"></i> Quick Actions</h6>
+                      </div>
+                      <div class="action-buttons">
+                        <button class="quick-action-btn emergency">
+                          <i class="bi bi-exclamation-triangle"></i>
+                          Report Emergency
+                        </button>
+                        <button class="quick-action-btn camera">
+                          <i class="bi bi-camera"></i>
+                          Check Cameras
+                        </button>
+                        <button class="quick-action-btn report">
+                          <i class="bi bi-file-text"></i>
+                          Generate Report
+                        </button>
+                      </div>
+                    </div>
+                  </div>
+
+                  <style>
+                    .monitoring-dashboard {
+                      padding: 1rem;
+                    }
+
+                    .dashboard-section {
+                      margin-bottom: 2rem;
+                    }
+
+                    .section-header {
+                      display: flex;
+                      justify-content: space-between;
+                      align-items: center;
+                      margin-bottom: 1rem;
+                    }
+
+                    .section-header h6 {
+                      font-size: 1.1rem;
+                      font-weight: 600;
+                      color: #2c3e50;
+                      margin: 0;
+                      display: flex;
+                      align-items: center;
+                      gap: 0.5rem;
+                    }
+
+                    .incident-cards {
+                      display: grid;
+                      grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+                      gap: 1rem;
+                    }
+
+                    .incident-card {
+                      background: white;
+                      border-radius: 10px;
+                      padding: 1rem;
+                      box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+                      border-left: 4px solid;
+                    }
+
+                    .incident-card.critical {
+                      border-left-color: #ef5350;
+                    }
+
+                    .incident-card.high {
+                      border-left-color: #ff9800;
+                    }
+
+                    .incident-header {
+                      display: flex;
+                      justify-content: space-between;
+                      align-items: center;
+                      margin-bottom: 0.8rem;
+                    }
+
+                    .incident-type {
+                      font-weight: 600;
+                      color: #2c3e50;
+                    }
+
+                    .time-badge {
+                      font-size: 0.8rem;
+                      color: #64748b;
+                    }
+
+                    .incident-details {
+                      margin-bottom: 1rem;
+                    }
+
+                    .incident-details p {
+                      margin: 0.3rem 0;
+                      font-size: 0.9rem;
+                    }
+
+                    .location {
+                      color: #64748b;
+                      display: flex;
+                      align-items: center;
+                      gap: 0.3rem;
+                    }
+
+                    .response-status {
+                      display: flex;
+                      justify-content: space-between;
+                      align-items: center;
+                    }
+
+                    .status-badge {
+                      padding: 0.3rem 0.8rem;
+                      border-radius: 15px;
+                      font-size: 0.85rem;
+                      display: flex;
+                      align-items: center;
+                      gap: 0.3rem;
+                    }
+
+                    .status-badge.dispatched {
+                      background: #e8f5e9;
+                      color: #2e7d32;
+                    }
+
+                    .status-badge.monitoring {
+                      background: #e3f2fd;
+                      color: #1565c0;
+                    }
+
+                    .action-btn {
+                      padding: 0.4rem 1rem;
+                      border: none;
+                      border-radius: 5px;
+                      background: #f1f5f9;
+                      color: #475569;
+                      cursor: pointer;
+                      transition: all 0.2s;
+                    }
+
+                    .action-btn:hover {
+                      background: #e2e8f0;
+                    }
+
+                    .dashboard-row {
+                      display: grid;
+                      grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+                      gap: 2rem;
+                      margin-bottom: 2rem;
+                    }
+
+                    .patrol-grid, .resource-grid {
+                      display: grid;
+                      gap: 1rem;
+                    }
+
+                    .patrol-card {
+                      background: white;
+                      border-radius: 10px;
+                      padding: 1rem;
+                      box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+                    }
+
+                    .patrol-info {
+                      display: flex;
+                      justify-content: space-between;
+                      align-items: center;
+                      margin-bottom: 0.8rem;
+                    }
+
+                    .team-name {
+                      font-weight: 600;
+                      color: #2c3e50;
+                    }
+
+                    .patrol-badge {
+                      padding: 0.2rem 0.6rem;
+                      border-radius: 12px;
+                      font-size: 0.8rem;
+                    }
+
+                    .patrol-badge.active {
+                      background: #e8f5e9;
+                      color: #2e7d32;
+                    }
+
+                    .patrol-location {
+                      display: flex;
+                      justify-content: space-between;
+                      color: #64748b;
+                      font-size: 0.9rem;
+                      margin-bottom: 0.8rem;
+                    }
+
+                    .team-status {
+                      display: flex;
+                      gap: 1rem;
+                      color: #64748b;
+                      font-size: 0.85rem;
+                    }
+
+                    .resource-card {
+                      background: white;
+                      border-radius: 10px;
+                      padding: 1rem;
+                      display: flex;
+                      align-items: center;
+                      gap: 1rem;
+                      box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+                    }
+
+                    .resource-icon {
+                      width: 40px;
+                      height: 40px;
+                      border-radius: 8px;
+                      background: #f1f5f9;
+                      display: flex;
+                      align-items: center;
+                      justify-content: center;
+                      color: #475569;
+                    }
+
+                    .resource-info {
+                      flex: 1;
+                    }
+
+                    .resource-label {
+                      display: block;
+                      font-size: 0.9rem;
+                      color: #64748b;
+                    }
+
+                    .resource-value {
+                      font-weight: 600;
+                      color: #2c3e50;
+                    }
+
+                    .resource-chart {
+                      width: 100px;
+                      height: 6px;
+                      background: #e2e8f0;
+                      border-radius: 3px;
+                      overflow: hidden;
+                    }
+
+                    .chart-bar {
+                      height: 100%;
+                      background: #4caf50;
+                      border-radius: 3px;
+                    }
+
+                    .quick-actions {
+                      background: #f8f9fa;
+                      border-radius: 10px;
+                      padding: 1.5rem;
+                    }
+
+                    .action-buttons {
+                      display: grid;
+                      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+                      gap: 1rem;
+                    }
+
+                    .quick-action-btn {
+                      padding: 1rem;
+                      border: none;
+                      border-radius: 8px;
+                      background: white;
+                      color: #2c3e50;
+                      font-weight: 500;
+                      cursor: pointer;
+                      display: flex;
+                      align-items: center;
+                      gap: 0.5rem;
+                      box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+                      transition: all 0.2s;
+                    }
+
+                    .quick-action-btn:hover {
+                      transform: translateY(-2px);
+                      box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+                    }
+
+                    .quick-action-btn.emergency {
+                      background: #fef2f2;
+                      color: #dc2626;
+                    }
+
+                    .quick-action-btn.camera {
+                      background: #f0fdf4;
+                      color: #166534;
+                    }
+
+                    .quick-action-btn.report {
+                      background: #f5f3ff;
+                      color: #5b21b6;
+                    }
+
+                    .refresh-time {
+                      font-size: 0.85rem;
+                      color: #64748b;
+                    }
+
+                    .refresh-btn {
+                      background: none;
+                      border: none;
+                      color: #64748b;
+                      cursor: pointer;
+                      padding: 0.3rem;
+                      border-radius: 4px;
+                      transition: all 0.2s;
+                    }
+
+                    .refresh-btn:hover {
+                      background: #f1f5f9;
+                      color: #475569;
+                    }
+                  </style>
+                </div>
+
+              </div>
+            </div><!-- End Reports -->
+
+            <!-- Conflict Hotspots Map -->
+            <div class="col-12">
+              <div class="card">
+                <div class="filter">
+                  <a class="icon" href="#" data-bs-toggle="dropdown"><i class="bi bi-three-dots"></i></a>
+                  <ul class="dropdown-menu dropdown-menu-end dropdown-menu-arrow">
+                    <li class="dropdown-header text-start">
+                      <h6>Filter</h6>
+                    </li>
+
+                    <li><a class="dropdown-item" href="#">Today</a></li>
+                    <li><a class="dropdown-item" href="#">This Month</a></li>
+                    <li><a class="dropdown-item" href="#">This Year</a></li>
+                  </ul>
+                </div>
+
+                <div class="card-body">
+                  <h5 class="card-title">Conflict Hotspots Map <span>| Tamil Nadu</span></h5>
+                  
+                  <div id="map" style="height: 500px; width: 100%; margin-bottom: 2rem;"></div>
+
+                  <script>
+                    document.addEventListener("DOMContentLoaded", () => {
+                      // Initialize the map
+                      var map = L.map('map').setView([11.1271, 78.6569], 7); // Centered on Tamil Nadu
+                      
+                      L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+                        attribution: '© OpenStreetMap contributors'
+                      }).addTo(map);
+
+                      // Add heatmap data for conflict hotspots
+                      var heatData = [
+                        [12.6821, 79.9889, 0.8], // Chengalpattu
+                        [11.6643, 78.1460, 0.6], // Salem
+                        [11.0168, 76.9558, 0.4], // Coimbatore
+                        [9.9252, 78.1198, 0.7], // Madurai
+                        [11.2588, 76.9558, 0.5], // Nilgiris
+                        [10.7905, 79.8428, 0.3], // Thanjavur
+                        [13.0827, 80.2707, 0.9], // Chennai
+                        [10.7905, 79.8428, 0.4]  // Tiruchirappalli
+                      ];
+
+                      // Add heatmap layer
+                      var heat = L.heatLayer(heatData, {
+                        radius: 25,
+                        blur: 15,
+                        maxZoom: 10
+                      }).addTo(map);
+
+                      // Add markers for forest areas
+                      var forestLocations = [
+                        { lat: 11.5930, lng: 76.5340, title: 'Mudumalai Tiger Reserve', desc: 'Tiger Reserve & Elephant Corridor' },
+                        { lat: 10.2500, lng: 76.8667, title: 'Anamalai Tiger Reserve', desc: 'Home to Tigers, Elephants & Gaur' },
+                        { lat: 11.5000, lng: 77.2500, title: 'Sathyamangalam Tiger Reserve', desc: 'Tiger Reserve & Wildlife Sanctuary' },
+                        { lat: 10.2833, lng: 79.8500, title: 'Point Calimere Wildlife Sanctuary', desc: 'Coastal Wildlife Sanctuary' },
+                        { lat: 10.4000, lng: 76.9667, title: 'Indira Gandhi Wildlife Sanctuary', desc: 'Part of Western Ghats' },
+                        { lat: 8.6167, lng: 77.3833, title: 'Kalakkad Mundanthurai Tiger Reserve', desc: 'Rainforest & Tiger Reserve' },
+                        { lat: 9.2500, lng: 79.1167, title: 'Gulf of Mannar Marine Park', desc: 'Marine National Park' },
+                        { lat: 11.4000, lng: 76.7000, title: 'Silent Valley National Park', desc: 'Tropical Rainforest' },
+                        { lat: 11.3000, lng: 76.8000, title: 'Mukurthi National Park', desc: 'High-altitude Grassland' },
+                        { lat: 10.3833, lng: 77.3667, title: 'Chinnar Wildlife Sanctuary', desc: 'Dry Deciduous Forest' },
+                        // Adding more forest areas
+                        { lat: 11.4700, lng: 76.4300, title: 'Bandipur National Park', desc: 'Tiger Reserve & Elephant Habitat' },
+                        { lat: 10.5500, lng: 77.2500, title: 'Amaravathi Reserve Forest', desc: 'Crocodile Sanctuary & Dense Forest' },
+                        { lat: 9.8500, lng: 77.1500, title: 'Megamalai Wildlife Sanctuary', desc: 'Rich Biodiversity & Shola Forest' },
+                        { lat: 11.2000, lng: 78.2000, title: 'Kolli Hills Reserve Forest', desc: 'Mountain Forest & Medicinal Plants' },
+                        { lat: 12.2500, lng: 78.8833, title: 'Jawadhu Hills Reserve Forest', desc: 'Deciduous Forest & Tribal Area' },
+                        { lat: 11.5833, lng: 78.6000, title: 'Pachaimalai Reserve Forest', desc: 'Eastern Ghats Forest Range' },
+                        { lat: 10.1000, lng: 77.5000, title: 'Palani Hills Forest', desc: 'Western Ghats Mountain Forest' },
+                        { lat: 8.7500, lng: 77.5000, title: 'Kanyakumari Wildlife Sanctuary', desc: 'Southern Tropical Forest' },
+                        { lat: 11.9000, lng: 79.1500, title: 'Kateri Reserve Forest', desc: 'Mixed Deciduous Forest' },
+                        { lat: 12.5000, lng: 78.5000, title: 'Yelagiri Hills Forest', desc: 'Hill Station Forest Area' }
+                      ];
+
+                      // Custom icon for forest markers
+                      var forestIcon = L.divIcon({
+                        html: '<i class="bi bi-tree-fill" style="color: #2d5a27; font-size: 24px;"></i>',
+                        className: 'forest-marker',
+                        iconSize: [30, 30],
+                        iconAnchor: [15, 30],
+                        popupAnchor: [0, -30]
+                      });
+
+                      // Add forest markers to map
+                      forestLocations.forEach(function(forest) {
+                        L.marker([forest.lat, forest.lng], {icon: forestIcon})
+                          .bindPopup(`
+                            <div style="padding: 10px;">
+                              <h4 style="margin: 0 0 8px 0; color: #2d5a27; font-weight: bold;">${forest.title}</h4>
+                              <p style="margin: 0; color: #666;">${forest.desc}</p>
+                            </div>
+                          `)
+                          .addTo(map);
+                      });
+
+                      // Add style for forest markers
+                      const markerStyle = document.createElement('style');
+                      markerStyle.textContent = `
+                        .forest-marker {
+                          background: none;
+                          border: none;
+                        }
+                        .forest-marker i {
+                          text-shadow: 2px 2px 3px rgba(0,0,0,0.2);
+                        }
+                      `;
+                      document.head.appendChild(markerStyle);
+                    });
+                  </script>
+
+                  <style>
+                    #map {
+                      border-radius: 8px;
+                      box-shadow: 0 0 10px rgba(0,0,0,0.1);
+                    }
+                  </style>
+                </div>
+              </div>
+            </div><!-- End Conflict Hotspots Map -->
+
+          </div>
+        </div><!-- End Left side columns -->
+
+        <!-- Right side columns -->
+        <div class="col-lg-4">
+
+          <!-- Recent Activity -->
+          <div class="card">
+            <div class="filter">
+              <a class="icon" href="#" data-bs-toggle="dropdown"><i class="bi bi-three-dots"></i></a>
+              <ul class="dropdown-menu dropdown-menu-end dropdown-menu-arrow">
+                <li class="dropdown-header text-start">
+                  <h6>Filter</h6>
+                </li>
+
+                <li><a class="dropdown-item" href="#">Today</a></li>
+                <li><a class="dropdown-item" href="#">This Month</a></li>
+                <li><a class="dropdown-item" href="#">This Year</a></li>
+              </ul>
+            </div>
+
+            <div class="card-body">
+              <h5 class="card-title">Recent Alerts <span>| Today</span></h5>
+
+              <div class="activity">
+                <div class="activity-item d-flex">
+                  <div class="activite-label">2 min</div>
+                  <i class='bi bi-circle-fill activity-badge text-danger align-self-start'></i>
+                  <div class="activity-content">
+                    <span class="fw-bold">CRITICAL ALERT:</span> Herd of 5 elephants spotted near Vadakkupattu Village, Chengalpattu
+                    <div class="alert-details">
+                      <span class="location"><i class="bi bi-geo-alt"></i> GPS: 12.6821°N, 79.9889°E</span>
+                      <span class="status"><i class="bi bi-info-circle"></i> Response team dispatched</span>
+                      <span class="action-needed">Local residents advised to stay indoors</span>
+                  </div>
+                  </div>
+                </div>
+
+                <div class="activity-item d-flex">
+                  <div class="activite-label">15 min</div>
+                  <i class='bi bi-circle-fill activity-badge text-warning align-self-start'></i>
+                  <div class="activity-content">
+                    <span class="fw-bold">MEDIUM ALERT:</span> Two leopards detected on camera traps near Salem outskirts
+                    <div class="alert-details">
+                      <span class="location"><i class="bi bi-geo-alt"></i> Yercaud Road Junction</span>
+                      <span class="status"><i class="bi bi-camera"></i> Visual confirmation from 3 cameras</span>
+                      <span class="action-needed">Increased patrol frequency initiated</span>
+                  </div>
+                  </div>
+                </div>
+
+                <div class="activity-item d-flex">
+                  <div class="activite-label">45 min</div>
+                  <i class='bi bi-circle-fill activity-badge text-danger align-self-start'></i>
+                  <div class="activity-content">
+                    <span class="fw-bold">HIGH ALERT:</span> Tiger movement detected in Mudumalai buffer zone
+                    <div class="alert-details">
+                      <span class="location"><i class="bi bi-geo-alt"></i> Masinagudi Range</span>
+                      <span class="status"><i class="bi bi-eye"></i> Multiple sightings reported</span>
+                      <span class="action-needed">Tourist activities temporarily suspended</span>
+                  </div>
+                  </div>
+                </div>
+
+                <div class="activity-item d-flex">
+                  <div class="activite-label">1.5 hrs</div>
+                  <i class='bi bi-circle-fill activity-badge text-warning align-self-start'></i>
+                  <div class="activity-content">
+                    <span class="fw-bold">ONGOING SITUATION:</span> Bear-human conflict reported in Coimbatore forest periphery
+                    <div class="alert-details">
+                      <span class="location"><i class="bi bi-geo-alt"></i> Boluvampatti Forest Range</span>
+                      <span class="status"><i class="bi bi-shield-check"></i> Rapid response team on site</span>
+                      <span class="action-needed">Public advisory issued for nearby settlements</span>
+                  </div>
+                  </div>
+              </div>
+            </div>
+
+              <style>
+                .activity-content {
+                  font-size: 0.95rem;
+                }
+                
+                .alert-details {
+                  margin-top: 0.5rem;
+                  font-size: 0.85rem;
+                  color: #666;
+                  display: flex;
+                  flex-direction: column;
+                  gap: 0.3rem;
+                }
+                
+                .alert-details span {
+                  display: flex;
+                  align-items: center;
+                  gap: 0.5rem;
+                }
+                
+                .alert-details i {
+                  font-size: 0.9rem;
+                  color: #4CAF50;
+                }
+                
+                .activity-item {
+                  padding: 1rem 0;
+                  border-bottom: 1px solid #eee;
+                }
+                
+                .activity-item:last-child {
+                  border-bottom: none;
+                }
+                
+                .activity-badge.text-danger {
+                  background: #ffebee;
+                }
+                
+                .activity-badge.text-warning {
+                  background: #fff3e0;
+                }
+                
+                .activity-badge.text-success {
+                  background: #e8f5e9;
+                }
+                
+                .activity-badge.text-info {
+                  background: #e3f2fd;
+                }
+              </style>
+            </div>
+          </div><!-- End Recent Activity -->
+
+          <!-- Emergency Contacts & Nearby Offices -->
+          <div class="card">
+            <div class="card-body">
+              <h5 class="card-title">Emergency Contacts & Offices <span>| Nearby</span></h5>
+
+              <div class="emergency-contacts">
+                <!-- Forest Offices Section -->
+                <div class="contact-section">
+                  <h6 class="section-title">
+                    <div class="title-with-status">
+                      <i class="bi bi-tree-fill"></i> Forest Offices
+                      <span class="status-dot online" title="All Systems Online"></span>
+            </div>
+                    <div class="update-info">
+                      <i class="bi bi-clock-history"></i>
+                      <span class="update-badge">Updated: 10 mins ago</span>
+                    </div>
+                  </h6>
+                  
+                  <div class="office-cards-container">
+                    <div class="office-card">
+                      <div class="office-header">
+                        <div class="office-title">
+                          <span class="office-name">Mudumalai Forest Division</span>
+                          <span class="office-status available">Available 24/7</span>
+                        </div>
+                        <span class="distance-badge">
+                          <i class="bi bi-geo-alt"></i>
+                          Nearest
+                        </span>
+                      </div>
+                      <div class="contact-details">
+                        <div class="contact-item primary">
+                          <i class="bi bi-telephone-fill"></i>
+                          <span>04321-222222</span>
+                          <div class="action-buttons">
+                            <button class="quick-call-btn" title="Quick Call">
+                              <i class="bi bi-telephone-fill"></i>
+                            </button>
+                            <button class="quick-save-btn" title="Save Contact">
+                              <i class="bi bi-bookmark-plus"></i>
+                            </button>
+                          </div>
+                        </div>
+                        <div class="contact-item">
+                          <i class="bi bi-geo-alt"></i>
+                          <span>Theppakadu, The Nilgiris</span>
+                          <button class="directions-btn" title="Get Directions">
+                            <i class="bi bi-map"></i>
+                          </button>
+                        </div>
+                        <div class="contact-item">
+                          <i class="bi bi-person-badge"></i>
+                          <span>DFO: Mr. Srinivas, IFS</span>
+                          <span class="duty-status on-duty">On Duty</span>
+                        </div>
+                        <div class="emergency-info">
+                          <i class="bi bi-info-circle"></i>
+                          <span>Control Room Active | Response Time: ~10 mins</span>
+                        </div>
+                      </div>
+                </div>
+
+                    <div class="office-card">
+                      <div class="office-header">
+                        <div class="office-title">
+                          <span class="office-name">Gudalur Forest Division</span>
+                          <span class="office-status available">Available 24/7</span>
+                        </div>
+                        <span class="distance-badge">
+                          <i class="bi bi-geo-alt"></i>
+                          5 km
+                        </span>
+                      </div>
+                      <div class="contact-details">
+                        <div class="contact-item primary">
+                          <i class="bi bi-telephone-fill"></i>
+                          <span>04262-261472</span>
+                          <div class="action-buttons">
+                            <button class="quick-call-btn" title="Quick Call">
+                              <i class="bi bi-telephone-fill"></i>
+                            </button>
+                            <button class="quick-save-btn" title="Save Contact">
+                              <i class="bi bi-bookmark-plus"></i>
+                            </button>
+                          </div>
+                        </div>
+                        <div class="contact-item">
+                          <i class="bi bi-geo-alt"></i>
+                          <span>Gudalur, The Nilgiris</span>
+                          <button class="directions-btn" title="Get Directions">
+                            <i class="bi bi-map"></i>
+                          </button>
+                        </div>
+                        <div class="contact-item">
+                          <i class="bi bi-person-badge"></i>
+                          <span>DFO: Ms. Priya, IFS</span>
+                          <span class="duty-status on-duty">On Duty</span>
+                        </div>
+                        <div class="emergency-info">
+                          <i class="bi bi-info-circle"></i>
+                          <span>Rapid Response Unit Available</span>
+                        </div>
+                      </div>
+                </div>
+
+                    <div class="office-card">
+                      <div class="office-header">
+                        <div class="office-title">
+                          <span class="office-name">Sathyamangalam Forest Division</span>
+                          <span class="office-status available">Available 24/7</span>
+                        </div>
+                        <span class="distance-badge">
+                          <i class="bi bi-geo-alt"></i>
+                          12 km
+                        </span>
+                      </div>
+                      <div class="contact-details">
+                        <div class="contact-item primary">
+                          <i class="bi bi-telephone-fill"></i>
+                          <span>04295-223333</span>
+                          <div class="action-buttons">
+                            <button class="quick-call-btn" title="Quick Call">
+                              <i class="bi bi-telephone-fill"></i>
+                            </button>
+                            <button class="quick-save-btn" title="Save Contact">
+                              <i class="bi bi-bookmark-plus"></i>
+                            </button>
+                          </div>
+                        </div>
+                        <div class="contact-item">
+                          <i class="bi bi-geo-alt"></i>
+                          <span>Sathyamangalam, Erode District</span>
+                          <button class="directions-btn" title="Get Directions">
+                            <i class="bi bi-map"></i>
+                          </button>
+                        </div>
+                        <div class="contact-item">
+                          <i class="bi bi-person-badge"></i>
+                          <span>DFO: Dr. Rajesh Kumar, IFS</span>
+                          <span class="duty-status on-duty">On Duty</span>
+                        </div>
+                        <div class="emergency-info">
+                          <i class="bi bi-info-circle"></i>
+                          <span>Tiger Reserve Control Room Active</span>
+                        </div>
+                      </div>
+                </div>
+
+                    <div class="office-card">
+                      <div class="office-header">
+                        <div class="office-title">
+                          <span class="office-name">Anamalai Tiger Reserve</span>
+                          <span class="office-status available">Available 24/7</span>
+                </div>
+                        <span class="distance-badge">
+                          <i class="bi bi-geo-alt"></i>
+                          15 km
+                        </span>
+                      </div>
+                      <div class="contact-details">
+                        <div class="contact-item primary">
+                          <i class="bi bi-telephone-fill"></i>
+                          <span>04253-222252</span>
+                          <div class="action-buttons">
+                            <button class="quick-call-btn" title="Quick Call">
+                              <i class="bi bi-telephone-fill"></i>
+                            </button>
+                            <button class="quick-save-btn" title="Save Contact">
+                              <i class="bi bi-bookmark-plus"></i>
+                            </button>
+                          </div>
+                        </div>
+                        <div class="contact-item">
+                          <i class="bi bi-geo-alt"></i>
+                          <span>Pollachi, Coimbatore District</span>
+                          <button class="directions-btn" title="Get Directions">
+                            <i class="bi bi-map"></i>
+                          </button>
+                        </div>
+                        <div class="contact-item">
+                          <i class="bi bi-person-badge"></i>
+                          <span>DFO: Mr. Raghunath, IFS</span>
+                          <span class="duty-status on-duty">On Duty</span>
+                        </div>
+                        <div class="emergency-info">
+                          <i class="bi bi-info-circle"></i>
+                          <span>Special Task Force Available</span>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+                <button class="separate-view-more-btn">
+                  <span>View All Forest Offices</span>
+                  <i class="bi bi-arrow-right"></i>
+                </button>
+
+                <style>
+                  .emergency-contacts {
+                    display: flex;
+                    flex-direction: column;
+                    gap: 1.5rem;
+                  }
+
+                  .contact-section {
+                    background: #fff;
+                    border-radius: 12px;
+                    padding: 1.2rem;
+                    box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+                  }
+
+                  .section-title {
+                    display: flex;
+                    justify-content: space-between;
+                    align-items: center;
+                    margin-bottom: 1.2rem;
+                    padding-bottom: 0.8rem;
+                    border-bottom: 2px solid #e2e8f0;
+                  }
+
+                  .title-with-status {
+                    display: flex;
+                    align-items: center;
+                    gap: 0.5rem;
+                    font-size: 1.1rem;
+                    font-weight: 600;
+                    color: #1e293b;
+                  }
+
+                  .status-dot {
+                    width: 8px;
+                    height: 8px;
+                    border-radius: 50%;
+                    margin-left: 0.5rem;
+                  }
+
+                  .status-dot.online {
+                    background: #22c55e;
+                    box-shadow: 0 0 0 3px rgba(34, 197, 94, 0.2);
+                  }
+
+                  .update-info {
+                    display: flex;
+                    align-items: center;
+                    gap: 0.4rem;
+                    font-size: 0.8rem;
+                    color: #64748b;
+                  }
+
+                  .office-cards-container {
+                    max-height: 480px;
+                    overflow-y: auto;
+                    padding-right: 0.5rem;
+                    margin-bottom: 0;
+                    scrollbar-width: thin;
+                    scrollbar-color: #cbd5e1 #f1f5f9;
+                  }
+
+                  .office-card {
+                    background: #f8fafc;
+                    border-radius: 10px;
+                    padding: 1.2rem;
+                    margin-bottom: 1rem;
+                    border: 1px solid #e2e8f0;
+                    transition: all 0.3s ease;
+                  }
+
+                  .office-card:hover {
+                    transform: translateY(-2px);
+                    box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+                  }
+
+                  .office-title {
+                    display: flex;
+                    flex-direction: column;
+                    gap: 0.3rem;
+                  }
+
+                  .office-name {
+                    font-weight: 600;
+                    color: #1e293b;
+                    font-size: 1rem;
+                  }
+
+                  .office-status {
+                    font-size: 0.75rem;
+                    padding: 0.2rem 0.5rem;
+                    border-radius: 12px;
+                    background: #dcfce7;
+                    color: #166534;
+                    display: inline-flex;
+                    align-items: center;
+                    gap: 0.3rem;
+                  }
+
+                  .distance-badge {
+                    display: flex;
+                    align-items: center;
+                    gap: 0.3rem;
+                    background: #f0fdf4;
+                    color: #166534;
+                    padding: 0.4rem 0.8rem;
+                    border-radius: 8px;
+                    font-size: 0.85rem;
+                    font-weight: 500;
+                  }
+
+                  .contact-item {
+                    display: flex;
+                    align-items: center;
+                    gap: 1rem;
+                    padding: 0.6rem 0;
+                    color: #475569;
+                    font-size: 0.9rem;
+                  }
+
+                  .contact-item.primary {
+                    background: #f8fafc;
+                    padding: 0.8rem;
+                    border-radius: 8px;
+                    margin: 0.5rem 0;
+                  }
+
+                  .action-buttons {
+                    margin-left: auto;
+                    display: flex;
+                    gap: 0.5rem;
+                  }
+
+                  .quick-call-btn, .quick-save-btn, .directions-btn {
+                    width: 32px;
+                    height: 32px;
+                    border-radius: 16px;
+                    border: none;
+                    display: flex;
+                    align-items: center;
+                    justify-content: center;
+                    cursor: pointer;
+                    transition: all 0.2s ease;
+                  }
+
+                  .quick-call-btn {
+                    background: #4caf50;
+                    color: white;
+                  }
+
+                  .quick-save-btn {
+                    background: #e2e8f0;
+                    color: #475569;
+                  }
+
+                  .directions-btn {
+                    background: #e2e8f0;
+                    color: #475569;
+                  }
+
+                  .quick-call-btn:hover, .quick-save-btn:hover, .directions-btn:hover {
+                    transform: translateY(-2px);
+                    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+                  }
+
+                  .duty-status {
+                    margin-left: auto;
+                    font-size: 0.75rem;
+                    padding: 0.2rem 0.6rem;
+                    border-radius: 12px;
+                  }
+
+                  .duty-status.on-duty {
+                    background: #dcfce7;
+                    color: #166534;
+                  }
+
+                  .emergency-info {
+                    display: flex;
+                    align-items: center;
+                    gap: 0.5rem;
+                    margin-top: 0.5rem;
+                    padding: 0.5rem;
+                    background: #fff3e0;
+                    border-radius: 6px;
+                    font-size: 0.85rem;
+                    color: #b45309;
+                  }
+
+                  .separate-view-more-btn {
+                    width: 100%;
+                    padding: 1rem;
+                    margin-top: 0.5rem;
+                    background: #4caf50;
+                    color: white;
+                    border: none;
+                    border-radius: 8px;
+                    font-size: 0.95rem;
+                    font-weight: 500;
+                    cursor: pointer;
+                    display: flex;
+                    align-items: center;
+                    justify-content: center;
+                    gap: 0.5rem;
+                    transition: all 0.3s ease;
+                    box-shadow: 0 2px 4px rgba(76, 175, 80, 0.2);
+                  }
+
+                  .separate-view-more-btn:hover {
+                    background: #43a047;
+                    transform: translateY(-2px);
+                    box-shadow: 0 4px 8px rgba(76, 175, 80, 0.3);
+                  }
+                </style>
+            </div>
+            </div>
+          </div><!-- End Emergency Contacts & Nearby Offices -->
+
+        </div><!-- End Right side columns -->
+
+      </div>
+    </section>
+
+  </main><!-- End #main -->
+
+  <!-- ======= Footer ======= -->
+  <footer id="footer" class="footer">
+    <div class="copyright">
+      &copy; Copyright <strong><span>AI Animal Detector</span></strong>. All Rights Reserved
+    </div>
+    <div class="credits">
+      <!-- All the links in the footer should remain intact. -->
+      <!-- You can delete the links only if you purchased the pro version. -->
+      <!-- Licensing information: https://bootstrapmade.com/license/ -->
+      <!-- Purchase the pro version with working PHP/AJAX contact form: https://bootstrapmade.com/nice-admin-bootstrap-admin-html-template/ -->
+      Designed by <a href="https://bootstrapmade.com/">BootstrapMade</a>
+    </div>
+  </footer><!-- End Footer -->
+
+  <a href="#" class="back-to-top d-flex align-items-center justify-content-center"><i class="bi bi-arrow-up-short"></i></a>
+
+  
+  <!-- Template Main JS File -->
+  <script src="../static/js/main.js"></script>
+
+</body>
+
+</html>

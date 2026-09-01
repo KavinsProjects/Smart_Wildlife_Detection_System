@@ -1,0 +1,181 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>How It Works - Animal Detector</title>
+    <link rel="stylesheet" href="../static/css/howitswork.css">
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+</head>
+<body>
+    <!-- Navigation -->
+    <nav class="navbar">
+        <div class="nav-container">
+            <a href="/" class="logo">
+                <img src="{% static 'images/logo1.webp' %}" alt="AI Animal Detector Logo" class="logo-img">
+                <span>Animal Detector</span>
+            </a>
+            <div class="nav-links">
+                <a href="/">Home</a>
+                <a href="/features">Features</a>
+                <a href="/howitswork">How It Works</a>
+                <a href="/dashboard">Dashboard</a>
+                <a href="/contact">Contact</a>
+                <a href="/login" class="login-btn">Login</a>
+                <a href="/signup" class="signup-btn">Sign Up</a>
+            </div>
+            <div class="menu-toggle">
+                <i class="fas fa-bars"></i>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <section class="hero">
+        <div class="hero-container">
+            <h1>How Animal Detector Works</h1>
+            <p>Discover how our AI-powered system detects and monitors wildlife in real-time</p>
+        </div>
+    </section>
+
+    <!-- Process Steps -->
+    <section class="process">
+        <div class="container">
+            <div class="process-step">
+                <div class="step-number">1</div>
+                <div class="step-content">
+                    <div class="step-icon">
+                        <i class="fas fa-camera"></i>
+                    </div>
+                    <h2>Camera Setup</h2>
+                    <p>Install your wildlife camera in the desired location. Our system is compatible with most modern trail cameras and surveillance systems.</p>
+                    <ul class="features-list">
+                        <li><i class="fas fa-check"></i> Easy installation process</li>
+                        <li><i class="fas fa-check"></i> Works with multiple camera types</li>
+                        <li><i class="fas fa-check"></i> Wireless connectivity options</li>
+                    </ul>
+                </div>
+                <div class="step-image">
+                    <img src="../static/images/bear.jpg" alt="Camera Setup">
+                </div>
+            </div>
+
+            <div class="process-step reverse">
+                <div class="step-number">2</div>
+                <div class="step-content">
+                    <div class="step-icon">
+                        <i class="fas fa-brain"></i>
+                    </div>
+                    <h2>AI Detection</h2>
+                    <p>Our advanced AI algorithms process the camera feed in real-time, identifying and classifying different animal species with high accuracy.</p>
+                    <ul class="features-list">
+                        <li><i class="fas fa-check"></i> Real-time processing</li>
+                        <li><i class="fas fa-check"></i> High accuracy detection</li>
+                        <li><i class="fas fa-check"></i> Species classification</li>
+                    </ul>
+                </div>
+                <div class="step-image">
+                    <img src="../static/images/deer.webp" alt="AI Detection">
+                </div>
+            </div>
+
+            <div class="process-step">
+                <div class="step-number">3</div>
+                <div class="step-content">
+                    <div class="step-icon">
+                        <i class="fas fa-bell"></i>
+                    </div>
+                    <h2>Instant Alerts</h2>
+                    <p>Receive immediate notifications when specific animals are detected, with options to customize alerts based on species and time.</p>
+                    <ul class="features-list">
+                        <li><i class="fas fa-check"></i> Customizable notifications</li>
+                        <li><i class="fas fa-check"></i> Mobile app alerts</li>
+                        <li><i class="fas fa-check"></i> Email notifications</li>
+                    </ul>
+                </div>
+                <div class="step-image">
+                    <img src="../static/images/tiger.jpg" alt="Instant Alerts">
+                </div>
+            </div>
+
+            <div class="process-step reverse">
+                <div class="step-number">4</div>
+                <div class="step-content">
+                    <div class="step-icon">
+                        <i class="fas fa-chart-line"></i>
+                    </div>
+                    <h2>Data Analysis</h2>
+                    <p>Access comprehensive analytics and insights about wildlife activity through our intuitive dashboard.</p>
+                    <ul class="features-list">
+                        <li><i class="fas fa-check"></i> Detailed reports</li>
+                        <li><i class="fas fa-check"></i> Activity patterns</li>
+                        <li><i class="fas fa-check"></i> Population trends</li>
+                    </ul>
+                </div>
+                <div class="step-image">
+                    <img src="../static/images/elephant.jpg" alt="Data Analysis">
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- CTA Section -->
+    <section class="cta">
+        <div class="container">
+            <h2>Ready to Get Started?</h2>
+            <p>Join thousands of users who are already using Animal Detector to monitor and protect wildlife.</p>
+            <div class="cta-buttons">
+                <a href="/signup" class="primary-btn">Start Free Trial</a>
+                <a href="/contact" class="secondary-btn">Contact Sales</a>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="footer-container">
+            <div class="footer-content">
+                <div class="footer-section">
+                    <h3>Animal Detector</h3>
+                    <p>Smart wildlife detection using advanced AI technology.</p>
+                </div>
+                <div class="footer-section">
+                    <h3>Quick Links</h3>
+                    <a href="/">Home</a>
+                    <a href="/features">Features</a>
+                    <a href="/pricing">Pricing</a>
+                    <a href="/contact">Contact</a>
+                </div>
+                <div class="footer-section">
+                    <h3>Contact Us</h3>
+                    <p>Email: info@animaldetector.com</p>
+                    <p>Phone: (555) 123-4567</p>
+                </div>
+                <div class="footer-section">
+                    <h3>Follow Us</h3>
+                    <div class="social-links">
+                        <a href="#"><i class="fab fa-facebook"></i></a>
+                        <a href="#"><i class="fab fa-twitter"></i></a>
+                        <a href="#"><i class="fab fa-linkedin"></i></a>
+                        <a href="#"><i class="fab fa-instagram"></i></a>
+                    </div>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p>&copy; 2024 Animal Detector. All rights reserved.</p>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        // Mobile menu toggle
+        document.querySelector('.menu-toggle').addEventListener('click', function() {
+            document.querySelector('.nav-links').classList.toggle('active');
+        });
+    </script>
+</body>
+</html>

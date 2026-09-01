@@ -1,0 +1,455 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>YOLO Animal Detection</title>
+    
+    <!-- Google Fonts -->
+    <link href="https://fonts.gstatic.com" rel="preconnect">
+    <link href="https://fonts.googleapis.com/css?family=Open+Sans:300,300i,400,400i,600,600i,700,700i|Nunito:300,300i,400,400i,600,600i,700,700i|Poppins:300,300i,400,400i,500,500i,600,600i,700,700i" rel="stylesheet">
+
+    <!-- Vendor CSS Files -->
+    <link href="{% static 'vendor/bootstrap/css/bootstrap.min.css' %}" rel="stylesheet">
+    <link href="{% static 'vendor/bootstrap-icons/bootstrap-icons.css' %}" rel="stylesheet">
+
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" crossorigin=""/>
+  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" crossorigin=""></script>
+  <script src="https://unpkg.com/leaflet.heat@0.2.0/dist/leaflet-heat.js"></script>
+
+    <!-- Template Main CSS File -->
+    <link href="{% static 'css/admindashboard.css' %}" rel="stylesheet">
+
+    <style>
+        /* Custom styles for video detection page */
+        .video-detection-container {
+            padding: 20px;
+            background: #fff;
+            border-radius: 10px;
+            box-shadow: 0 0 20px rgba(1, 41, 112, 0.1);
+            margin-bottom: 30px;
+        }
+
+        #video-form {
+            margin-bottom: 20px;
+        }
+
+        #video-url {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #dce3f1;
+            border-radius: 4px;
+            margin-bottom: 15px;
+            font-size: 14px;
+        }
+
+        #video-form button {
+            background: #4caf50;
+            color: #fff;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: all 0.3s ease;
+        }
+
+        #video-form button:hover {
+            background: #43a047;
+            transform: translateY(-2px);
+        }
+
+        .video-section {
+            background: #f6f9ff;
+            padding: 20px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+        }
+
+        .video-section h2 {
+            color: #012970;
+            font-size: 20px;
+            margin-bottom: 15px;
+            font-weight: 600;
+        }
+
+        #frames-container {
+            background: #fff;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 0 15px rgba(1, 41, 112, 0.1);
+        }
+
+        #frames-container img {
+            max-width: 100%;
+            border-radius: 4px;
+            margin-bottom: 15px;
+        }
+
+        .detection-info {
+            background: #e8f5e9;
+            padding: 10px 15px;
+            border-radius: 6px;
+            margin-bottom: 10px;
+            color: #2e7d32;
+            font-weight: 500;
+        }
+
+        /* Header styles */
+        .header {
+            background: #4caf50;
+            padding: 10px 0;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+
+        .header .d-flex {
+            width: 100%;
+            justify-content: flex-start;
+            padding: 0 20px;
+            gap: 15px;
+        }
+
+        .header .toggle-sidebar-btn {
+            color: #ffffff;
+            font-size: 1.5rem;
+            cursor: pointer;
+            transition: transform 0.3s ease;
+        }
+
+        .header .toggle-sidebar-btn:hover {
+            transform: scale(1.1);
+        }
+
+        .header .logo {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            text-decoration: none;
+        }
+
+        .header .logo img {
+            max-height: 60px;
+            object-fit: contain;
+        }
+
+        .header .logo span {
+            font-size: 1.2rem;
+            white-space: nowrap;
+            color: #ffffff;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .header-nav {
+            margin-left: auto;
+        }
+
+        .header-nav .nav-link {
+            color: #ffffff;
+            padding: 0.5rem 1rem;
+            font-weight: 500;
+        }
+
+        .header-nav .nav-link:hover {
+            color: #90EE90;
+        }
+
+        .header-nav .dropdown-menu {
+            background: #ffffff;
+            border: none;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+
+        .header-nav .dropdown-item {
+            color: #333;
+            padding: 0.5rem 1rem;
+        }
+
+        .header-nav .dropdown-item:hover {
+            background: #f8f9fa;
+            color: #1a472a;
+        }
+
+        .header-nav .badge {
+            background: #ff4444;
+            color: #ffffff;
+        }
+
+        /* Sidebar styles */
+        .sidebar .nav-item .nav-link {
+            color: #000000;
+            font-weight: 500;
+            transition: all 0.3s ease;
+        }
+
+        .sidebar .nav-item .nav-link:hover,
+        .sidebar .nav-item .nav-link.active {
+            color: #1a472a;
+            background: rgba(26, 71, 42, 0.1);
+        }
+
+        .sidebar .nav-item .nav-link i {
+            color: #000000;
+            transition: all 0.3s ease;
+        }
+
+        .sidebar .nav-item .nav-link:hover i,
+        .sidebar .nav-item .nav-link.active i {
+            color: #1a472a;
+        }
+        /* Footer */
+        .footer {
+            background: #000000;
+            padding: 20px 0;
+            color: #fff;
+            border-top: 1px solid #cddfff;
+            margin-left: 300px;
+        }
+
+        .footer .copyright {
+            text-align: center;
+        }
+
+        /* Responsive */
+        @media (max-width: 1199px) {
+            .sidebar {
+                left: -300px;
+            }
+
+            #main {
+                margin-left: 0;
+            }
+
+            .footer {
+                margin-left: 0;
+            }
+
+            .toggle-sidebar .sidebar {
+                left: 0;
+            }
+
+            .toggle-sidebar #main {
+                margin-left: 300px;
+            }
+
+            .toggle-sidebar .footer {
+                margin-left: 300px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- ======= Header ======= -->
+    <header id="header" class="header fixed-top d-flex align-items-center">
+        <div class="d-flex align-items-center">
+            <i class="bi bi-list toggle-sidebar-btn text-white"></i>
+            <a href="{% url 'home' %}" class="logo">
+                <img src="{% static 'images/logo1.webp' %}" alt="AI Animal Detector Logo">
+                <span>Animal Detector</span>
+            </a>
+        </div>
+    </header>
+
+    <!-- ======= Sidebar ======= -->
+    <aside id="sidebar" class="sidebar">
+        <ul class="sidebar-nav" id="sidebar-nav">
+            <li class="nav-item">
+                <a class="nav-link" href="{% url 'admin-dashboard' %}">
+                    <i class="bi bi-grid"></i>
+                    <span>Dashboard</span>
+                </a>
+            </li>
+
+            <li class="nav-item">
+                <a class="nav-link" href="{% url 'livemonitoring' %}">
+                    <i class="bi bi-camera-video"></i>
+                    <span>Live Monitoring</span>
+                </a>
+            </li>
+
+            <li class="nav-item">
+                <a class="nav-link" href="{% url 'alerts' %}">
+                    <i class="bi bi-bell"></i>
+                    <span>Alerts</span>
+                </a>
+            </li>
+
+            <li class="nav-item">
+                <a class="nav-link" href="{% url 'analysis' %}">
+                    <i class="bi bi-graph-up"></i>
+                    <span>Analysis</span>
+                </a>
+            </li>
+
+            <li class="nav-item">
+                <a class="nav-link active" href="{% url 'index' %}">
+                    <i class="bi bi-search"></i>
+                    <span>Detect</span>
+                </a>
+            </li>
+
+            <li class="nav-heading mt-3">Account</li>
+
+            <li class="nav-item">
+                <a class="nav-link" href="#">
+                    <i class="bi bi-box-arrow-right"></i>
+                    <span>Logout</span>
+                </a>
+            </li>
+        </ul>
+    </aside>
+
+    <main id="main" class="main">
+        <div class="pagetitle">
+            <h1>Video Detection</h1>
+            <nav>
+                <ol class="breadcrumb">
+                    <li class="breadcrumb-item"><a href="{% url 'admin-dashboard' %}">Home</a></li>
+                    <li class="breadcrumb-item active">Video Detection</li>
+                </ol>
+            </nav>
+        </div>
+
+        <section class="section">
+            <div class="row">
+                <div class="col-lg-12">
+                    <!-- Camera Details Section -->
+                    <div class="video-detection-container mb-4">
+                        <h5 class="card-title mb-4">Registered Cameras</h5>
+                        <div id="cameraDetailsList" class="row g-4">
+                            <!-- Camera details will be displayed here -->
+                        </div>
+                    </div>
+
+                    <!-- Existing Video Detection Container -->
+                    <div class="video-detection-container">
+                        <form id="video-form" class="mb-4">
+                            <div class="input-group">
+                                <input type="text" id="video-url" class="form-control" placeholder="Enter YouTube video URL" required />
+                                <button type="submit" class="btn btn-success">
+                                    <i class="bi bi-play-circle"></i> Start Detection
+                                </button>
+                            </div>
+                        </form>
+
+                        <div class="row">
+                            <div class="col-lg-6">
+                                <div class="video-section">
+                                    <h2><i class="bi bi-camera-video"></i> Live Video Feed</h2>
+                                    <iframe id="youtube-player" width="100%" height="360" frameborder="0" allowfullscreen></iframe>
+                                </div>
+                            </div>
+
+                            <div class="col-lg-6">
+                                <div class="video-section">
+                                    <h2><i class="bi bi-eye"></i> Processed Frames</h2>
+                                    <div id="frames-container"></div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <!-- ======= Footer ======= -->
+    <footer id="footer" class="footer">
+        <div class="copyright">
+            &copy; Copyright <strong><span>AI Animal Detector</span></strong>. All Rights Reserved
+        </div>
+    </footer>
+
+    <a href="#" class="back-to-top d-flex align-items-center justify-content-center"><i class="bi bi-arrow-up-short"></i></a>
+
+    <!-- Template Main JS File -->
+    <script src="{% static 'js/main.js' %}"></script>
+
+    <script>
+        // Toggle sidebar functionality
+        document.querySelector('.toggle-sidebar-btn').addEventListener('click', function() {
+            document.body.classList.toggle('toggle-sidebar');
+        });
+
+        // Video detection functionality
+        document.getElementById("video-form").addEventListener("submit", function (e) {
+            e.preventDefault();
+
+            const videoUrl = document.getElementById("video-url").value;
+
+            // Extract YouTube Video ID
+            const videoId = new URL(videoUrl).searchParams.get("v") || videoUrl.split("/").pop();
+            const embedUrl = `https://www.youtube.com/embed/${videoId}?autoplay=1`;
+
+            // Update YouTube Player
+            document.getElementById("youtube-player").src = embedUrl;
+
+            // Start real-time processing
+            const eventSource = new EventSource(`/stream_video?video_url=${encodeURIComponent(videoUrl)}`);
+
+            eventSource.onmessage = function (event) {
+                const data = JSON.parse(event.data);
+                if (data.frame) {
+                    const framesContainer = document.getElementById("frames-container");
+                    framesContainer.innerHTML = ''; // Clear previous frame
+
+                    const img = document.createElement("img");
+                    img.src = 'data:image/jpeg;base64,' + data.frame;
+                    framesContainer.appendChild(img);
+
+                    // Display detections with improved styling
+                    data.detections.forEach(detection => {
+                        const detectionInfo = document.createElement("div");
+                        detectionInfo.className = "detection-info";
+                        detectionInfo.innerHTML = `
+                            <i class="bi bi-check-circle"></i>
+                            ${detection.class}: ${(detection.confidence * 100).toFixed(1)}% confidence
+                        `;
+                        framesContainer.appendChild(detectionInfo);
+                    });
+                }
+            };
+
+            eventSource.onerror = function () {
+                eventSource.close();
+            };
+        });
+
+        // Add this before the existing script
+        document.addEventListener('DOMContentLoaded', function() {
+            // Display registered cameras
+            function displayCameras() {
+                const cameraDetailsList = document.getElementById('cameraDetailsList');
+                const cameras = JSON.parse(localStorage.getItem('cameras') || '[]');
+                
+                if (cameras.length === 0) {
+                    cameraDetailsList.innerHTML = '<div class="col-12"><div class="alert alert-info">No cameras registered yet. Add cameras from the Live Monitoring page.</div></div>';
+                    return;
+                }
+
+                cameraDetailsList.innerHTML = cameras.map(camera => `
+                    <div class="col-md-6 col-lg-4">
+                        <div class="card">
+                            <div class="card-body">
+                                <h5 class="card-title">${camera.name}</h5>
+                                <div class="mt-3">
+                                    <p><i class="bi bi-geo-alt-fill text-primary"></i> <strong>District:</strong> ${camera.district}</p>
+                                    <p><i class="bi bi-tree-fill text-success"></i> <strong>Forest Area:</strong> ${camera.forestArea}</p>
+                                    <p><i class="bi bi-camera-fill text-info"></i> <strong>IP Address:</strong> ${camera.ip}</p>
+                                    <p><i class="bi bi-person-fill text-warning"></i> <strong>Username:</strong> ${camera.username}</p>
+                                    <p><i class="bi bi-person-fill text-warning"></i> <strong>Streaming_type:</strong> ${camera.username}</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                `).join('');
+            }
+
+            // Call the function to display cameras
+            displayCameras();
+        });
+    </script>
+</body>
+</html>

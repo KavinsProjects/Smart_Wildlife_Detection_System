@@ -1,0 +1,909 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta content="width=device-width, initial-scale=1.0" name="viewport">
+  <title>Wildlife Analysis - Forest Department of Tamil Nadu</title>
+  <meta content="" name="description">
+  <meta content="" name="keywords">
+<!-- Google Fonts -->
+
+  <link href="https://fonts.gstatic.com" rel="preconnect">
+
+  <link href="https://fonts.googleapis.com/css?family=Open+Sans:300,300i,400,400i,600,600i,700,700i|Nunito:300,300i,400,400i,600,600i,700,700i|Poppins:300,300i,400,400i,500,500i,600,600i,700,700i" rel="stylesheet">
+
+
+
+  <!-- Vendor CSS Files -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css" rel="stylesheet">
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" crossorigin=""/>
+
+  <!-- Template Main CSS File -->
+  <link href="{% static 'css/admindashboard.css' %}" rel="stylesheet">
+
+  <!-- Chart.js -->
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+  <style>
+    /* Add these critical CSS variables and styles */
+    :root {
+      --primary-color: #4CAF50;
+      --secondary-color: #2196F3;
+      --accent-color: #FF5722;
+      --background-color: #ffffff;
+      --text-primary: #2c3e50;
+      --text-secondary: #7f8c8d;
+      --light-bg: #f6f9ff;
+      --dark-bg: #012970;
+      --gradient-primary: linear-gradient(135deg, #4CAF50 0%, #45a049 100%);
+      --gradient-secondary: linear-gradient(135deg, #2196F3 0%, #1976D2 100%);
+    }
+
+    /* Stat Cards */
+    .stat-card {
+      color: white;
+      border-radius: 15px;
+      padding: 20px;
+      margin-bottom: 20px;
+      box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+      height: 200px;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .stat-card.tiger { background: var(--gradient-secondary); }
+    .stat-card.areas { background: var(--gradient-primary); }
+    .stat-card.protected { background: linear-gradient(135deg, var(--accent-color) 0%, #f4511e 100%); }
+    .stat-card.biosphere { background: linear-gradient(135deg, #00BCD4 0%, #0097A7 100%); }
+
+    /* Chart Containers */
+    .chart-container {
+      position: relative;
+      height: 400px;
+      margin-bottom: 30px;
+      background-color: white;
+      padding: 15px;
+      border-radius: 10px;
+    }
+
+    .pie-chart-container {
+      height: 450px;
+      padding: 15px;
+    }
+
+    /* Status Boxes */
+    .status-box {
+      padding: 20px;
+      border-radius: 10px;
+      color: white;
+      height: 150px;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      cursor: pointer;
+      overflow: hidden;
+      transition: all 0.3s ease;
+    }
+
+    .status-box.critical { background: linear-gradient(135deg, var(--accent-color) 0%, #f4511e 100%); }
+    .status-box.endangered { background: linear-gradient(135deg, var(--secondary-color) 0%, #1976D2 100%); }
+    .status-box.vulnerable { background: linear-gradient(135deg, var(--primary-color) 0%, #45a049 100%); }
+    .status-box.near-threatened { background: linear-gradient(135deg, #00BCD4 0%, #0097A7 100%); }
+
+    /* Analysis Cards */
+    .analysis-card {
+      border: none;
+      border-radius: 15px;
+      box-shadow: 0 0 25px rgba(0,0,0,0.1);
+      margin-bottom: 30px;
+      background-color: white;
+    }
+
+    .analysis-card .card-title {
+      color: var(--text-primary);
+      padding: 20px;
+      margin: 0;
+      border-bottom: 2px solid var(--light-bg);
+    }
+
+    /* Species Table */
+    .species-table th {
+      background-color: var(--primary-color);
+      color: white;
+      padding: 12px;
+    }
+
+    .species-table tr:hover {
+      background-color: var(--light-bg);
+    }
+
+    /* Make sure the main content area is properly positioned */
+    #main {
+      margin-left: 300px;
+      padding: 20px;
+      transition: all 0.3s;
+      margin-top: 60px;
+    }
+
+    @media (max-width: 1199px) {
+      #main {
+        margin-left: 0;
+      }
+    }
+
+    /* Sidebar menu styles */
+    .sidebar .nav-item .nav-link {
+      color: #000000;
+      font-weight: 500;
+      transition: all 0.3s ease;
+    }
+
+    .sidebar .nav-item .nav-link:hover,
+    .sidebar .nav-item .nav-link.active {
+      color: #1a472a;
+      background: rgba(26, 71, 42, 0.1);
+    }
+
+    .sidebar .nav-item .nav-link i {
+      color: #000000;
+      transition: all 0.3s ease;
+    }
+
+    .sidebar .nav-item .nav-link:hover i,
+    .sidebar .nav-item .nav-link.active i {
+      color: #1a472a;
+    }
+
+    .header {
+      height: 60px;
+      transition: all 0.5s;
+      z-index: 997;
+      padding: 0 20px;
+      background-color: #4caf50;
+      box-shadow: 0 2px 20px rgba(1, 41, 112, 0.1);
+    }
+
+    .header .toggle-sidebar-btn {
+      font-size: 32px;
+      margin-right: 15px;
+      cursor: pointer;
+      color: white;
+    }
+
+    .header .logo {
+      margin-left: 15px;
+    }
+
+    .header .logo span {
+      font-size: 20px;
+      font-weight: 600;
+    }
+
+    .header .search-bar {
+      min-width: 360px;
+      padding: 0 20px;
+    }
+
+    .header .search-form {
+      width: 100%;
+    }
+
+    .header .search-form input {
+      border: 0;
+      font-size: 14px;
+      color: #012970;
+      border: 1px solid rgba(1, 41, 112, 0.2);
+      padding: 7px 38px 7px 8px;
+      border-radius: 3px;
+      transition: 0.3s;
+      width: 100%;
+    }
+
+    .header .search-form button {
+      border: 0;
+      padding: 0;
+      margin-left: -30px;
+      background: none;
+    }
+
+    .header-nav ul {
+      list-style: none;
+      padding: 0;
+      margin: 0;
+    }
+
+    .header-nav > ul {
+      margin: 0;
+      padding: 0;
+    }
+
+    .header-nav .nav-icon {
+      font-size: 22px;
+      color: white;
+    }
+
+    .header-nav .nav-profile {
+      color: white;
+    }
+
+    .header-nav .nav-profile img {
+      max-height: 36px;
+    }
+
+    .header-nav .nav-profile span {
+      font-size: 14px;
+      font-weight: 600;
+    }
+
+    .header-nav .notifications {
+      min-width: 300px;
+      padding: 10px;
+    }
+
+    .header-nav .notifications .notification-item {
+      display: flex;
+      align-items: center;
+      padding: 15px 10px;
+      transition: 0.3s;
+      border-bottom: 1px solid #eee;
+    }
+
+    .header-nav .notifications .notification-item i {
+      margin: 0 20px 0 10px;
+      font-size: 24px;
+    }
+
+    .header-nav .notifications .notification-item h4 {
+      font-size: 16px;
+      font-weight: 600;
+      margin-bottom: 5px;
+    }
+
+    .header-nav .notifications .notification-item p {
+      font-size: 13px;
+      margin-bottom: 3px;
+      color: #919191;
+    }
+
+    .header-nav .notifications .notification-item:hover {
+      background-color: #f6f9ff;
+    }
+
+    .header-nav .messages {
+      min-width: 280px;
+      padding: 10px;
+    }
+
+    .header-nav .profile {
+      min-width: 240px;
+      padding: 10px;
+    }
+
+    .header-nav .profile .dropdown-header h6 {
+      font-size: 18px;
+      margin-bottom: 0;
+      font-weight: 600;
+      color: #444444;
+    }
+
+    .header-nav .profile .dropdown-header span {
+      font-size: 14px;
+    }
+
+    .header-nav .profile .dropdown-item {
+      font-size: 14px;
+      padding: 10px 15px;
+      transition: 0.3s;
+    }
+
+    .header-nav .profile .dropdown-item i {
+      margin-right: 10px;
+      font-size: 18px;
+      line-height: 0;
+    }
+
+    .header-nav .profile .dropdown-item:hover {
+      background-color: #f6f9ff;
+    }
+
+    /* Add or update these styles in your style section */
+    .sidebar-nav .nav-link {
+      display: flex;
+      align-items: center;
+      font-size: 15px;
+      font-weight: 600;
+      color: #000000 !important; /* Force black color */
+      transition: 0.3s;
+      padding: 10px 15px;
+      border-radius: 4px;
+      background: transparent;
+    }
+
+    .sidebar-nav .nav-link i {
+      font-size: 16px;
+      margin-right: 10px;
+      color: #000000 !important; /* Force black color for icons */
+    }
+
+    .sidebar-nav .nav-link:hover {
+      color: #4CAF50 !important; /* Green color on hover */
+      background: #f6f9ff;
+    }
+
+    .sidebar-nav .nav-link:hover i {
+      color: #4CAF50 !important; /* Green color for icons on hover */
+    }
+
+    .sidebar-nav .nav-link.active {
+      color: #4CAF50 !important; /* Green color for active link */
+      background: #f6f9ff;
+    }
+
+    .sidebar-nav .nav-link.active i {
+      color: #4CAF50 !important; /* Green color for active link icon */
+    }
+  </style>
+</head>
+<body>
+  <!-- ======= Header ======= -->
+  <header id="header" class="header fixed-top d-flex align-items-center">
+    <div class="d-flex align-items-center justify-content-between">
+      <i class="bi bi-list toggle-sidebar-btn text-white"></i>
+      <a href="{% url 'home' %}" class="logo d-flex align-items-center">
+        <img src="{% static 'images/logo1.webp' %}" alt="AI Animal Detector Logo" class="logo-img">
+        <span class="ms-2 text-white fw-bold">Animal Detector</span>
+      </a>
+    </div>
+    <nav class="header-nav ms-auto">
+      <ul class="d-flex align-items-center">
+        <li class="nav-item dropdown pe-3">
+          <ul class="dropdown-menu dropdown-menu-end dropdown-menu-arrow profile">
+            <li class="dropdown-header">
+              <h6>Kevin Anderson</h6>
+              <span>Web Designer</span>
+            </li>
+            <li><hr class="dropdown-divider"></li>
+            <li>
+              <a class="dropdown-item d-flex align-items-center" href="users-profile.html">
+                <i class="bi bi-person"></i>
+                <span>My Profile</span>
+              </a>
+            </li>
+            <li><hr class="dropdown-divider"></li>
+            <li>
+              <a class="dropdown-item d-flex align-items-center" href="users-profile.html">
+                <i class="bi bi-gear"></i>
+                <span>Account Settings</span>
+              </a>
+            </li>
+            <li><hr class="dropdown-divider"></li>
+            <li>
+              <a class="dropdown-item d-flex align-items-center" href="pages-faq.html">
+                <i class="bi bi-question-circle"></i>
+                <span>Need Help?</span>
+              </a>
+            </li>
+            <li><hr class="dropdown-divider"></li>
+            <li>
+              <a class="dropdown-item d-flex align-items-center" href="{% url 'home' %}" onclick="return confirm('Are you sure you want to logout?');">
+                <i class="bi bi-box-arrow-right"></i>
+                <span>Sign Out</span>
+              </a>
+            </li>
+      </ul>
+        </li>
+      </ul>
+    </nav>
+  </header>
+
+  <!-- ======= Sidebar ======= -->
+  <aside id="sidebar" class="sidebar">
+    <ul class="sidebar-nav" id="sidebar-nav">
+      <li class="nav-item">
+        <a class="nav-link" href="{% url 'admin-dashboard' %}">
+          <i class="bi bi-grid"></i>
+          <span>Dashboard</span>
+        </a>
+      </li><!-- End Dashboard Nav -->
+
+      <li class="nav-item">
+        <a class="nav-link" href="{% url 'livemonitoring' %}">
+          <i class="bi bi-camera-video"></i>
+          <span>Live Monitoring</span>
+        </a>
+      </li><!-- End Live Monitoring Nav -->
+
+      <li class="nav-item">
+        <a class="nav-link" href="{% url 'alerts' %}">
+          <i class="bi bi-bell"></i>
+          <span>Alerts</span>
+        </a>
+      </li><!-- End Alerts Nav -->
+
+      <li class="nav-item">
+        <a class="nav-link" href="{% url 'analysis' %}">
+          <i class="bi bi-graph-up"></i>
+          <span>Analysis</span>
+        </a>
+      </li>
+
+      <li class="nav-item">
+        <a class="nav-link" href="{% url 'index' %}">
+          <i class="bi bi-search"></i>
+          <span>Detect</span>
+        </a>
+      </li><!-- End Analysis Nav -->
+
+      <li class="nav-heading mt-3">Account</li>
+
+      <li class="nav-item">
+        <a class="nav-link" href="{% url 'home' %}">
+          <i class="bi bi-box-arrow-right"></i>
+          <span>Logout</span>
+        </a>
+      </li><!-- End Logout Nav -->
+    </ul>
+
+    <style>
+      .sidebar {
+        min-height: 100vh;
+      }
+
+      .nav-link {
+        color: #000000;
+        font-weight: 500;
+        transition: all 0.3s ease;
+      }
+
+      .nav-link:hover,
+      .nav-link.active {
+        color: #1a472a;
+        background: rgba(26, 71, 42, 0.1);
+      }
+
+      .nav-link i {
+        color: #000000;
+        transition: all 0.3s ease;
+      }
+
+      .nav-link:hover i,
+      .nav-link.active i {
+        color: #1a472a;
+      }
+
+      .nav-heading {
+        font-size: 0.9rem;
+        font-weight: 600;
+        color: #64748b;
+        text-transform: uppercase;
+        padding: 0.5rem 1rem;
+        margin-top: 1rem;
+        border-top: 1px solid #e2e8f0;
+      }
+    </style>
+  </aside><!-- End Sidebar-->
+
+  <main id="main" class="main">
+    <div class="pagetitle">
+      <h1>Wildlife Statistics</h1>
+      <nav>
+        <ol class="breadcrumb">
+          <li class="breadcrumb-item"><a href="{% url 'admin-dashboard' %}">Home</a></li>
+          <li class="breadcrumb-item active">Wildlife Analysis</li>
+        </ol>
+      </nav>
+    </div><!-- End Page Title -->
+
+    <section class="section">
+      <div class="row">
+        <!-- Key Statistics -->
+        <div class="col-lg-12">
+          <div class="row">
+            <div class="col-md-3">
+              <div class="stat-card tiger">
+                <h3>306</h3>
+                <p>Tiger Population (2022)</p>
+                <span class="trend-indicator">
+                  <i class="bi bi-arrow-up"></i> 15.9% from 2018
+                </span>
+              </div>
+            </div>
+            <div class="col-md-3">
+              <div class="stat-card areas">
+                <h3>37</h3>
+                <p>Protected Areas</p>
+                <div class="small">
+                  5 National Parks<br>
+                  15 Wildlife Sanctuaries<br>
+                  15 Bird Sanctuaries<br>
+                  2 Conservation Reserves
+                </div>
+              </div>
+            </div>
+            <div class="col-md-3">
+              <div class="stat-card protected">
+                <h3>7,073</h3>
+                <p>Protected Area (sq. km)</p>
+                <span class="trend-indicator">
+                  <i class="bi bi-arrow-up"></i> 30.92% of Forest Area
+                </span>
+              </div>
+            </div>
+            <div class="col-md-3">
+              <div class="stat-card biosphere">
+                <h3>3</h3>
+                <p>Biosphere Reserves</p>
+                <div class="small">
+                  Nilgiris<br>
+                  Gulf of Mannar<br>
+                  Agasthiarmalai
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Wildlife Population Trends -->
+        <div class="col-lg-8">
+          <div class="card analysis-card">
+            <div class="card-body">
+              <h5 class="card-title">Wildlife Population Trends</h5>
+              <div class="chart-container">
+                <canvas id="speciesDistributionChart"></canvas>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Protected Areas Distribution -->
+        <div class="col-lg-4">
+          <div class="card analysis-card">
+            <div class="card-body">
+              <h5 class="card-title">Protected Areas Distribution</h5>
+              <div class="pie-chart-container">
+                <canvas id="endangeredSpeciesChart"></canvas>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Endangered Species Overview -->
+        <div class="col-lg-12">
+          <div class="card analysis-card">
+            <div class="card-body">
+              <h5 class="card-title">Endangered Species Overview</h5>
+
+              <!-- Conservation Status Summary -->
+              <div class="row mb-4">
+                <div class="col-md-3">
+                  <div class="status-box critical">
+                    <div class="status-count">3</div>
+                    <div class="status-label">Critically Endangered</div>
+                    <div class="species-count">Bengal Tiger, Olive Ridley Turtle</div>
+                  </div>
+                </div>
+                <div class="col-md-3">
+                  <div class="status-box endangered">
+                    <div class="status-count">4</div>
+                    <div class="status-label">Endangered</div>
+                    <div class="species-count">Indian Elephant, Nilgiri Tahr, etc.</div>
+                  </div>
+                </div>
+                <div class="col-md-3">
+                  <div class="status-box vulnerable">
+                    <div class="status-count">3</div>
+                    <div class="status-label">Vulnerable</div>
+                    <div class="species-count">King Cobra, Indian Python</div>
+                  </div>
+                </div>
+                <div class="col-md-3">
+                  <div class="status-box near-threatened">
+                    <div class="status-count">1</div>
+                    <div class="status-label">Near Threatened</div>
+                    <div class="species-count">Great Indian Hornbill</div>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Species Location Map -->
+              <div class="row mb-4">
+                <div class="col-lg-8">
+                  <div class="location-map">
+                    <h6 class="map-title">Species Distribution by Location</h6>
+                    <div class="location-tags">
+                      <div class="location-tag">
+                        <span class="location-name">Anamalai Tiger Reserve</span>
+                        <div class="species-tags">
+                          <span class="species-tag mammal">Bengal Tiger</span>
+                          <span class="species-tag mammal">Indian Elephant</span>
+                          <span class="species-tag bird">Great Indian Hornbill</span>
+                        </div>
+                      </div>
+                      <div class="location-tag">
+                        <span class="location-name">Nilgiri Biosphere Reserve</span>
+                        <div class="species-tags">
+                          <span class="species-tag mammal">Indian Elephant</span>
+                          <span class="species-tag reptile">King Cobra</span>
+                          <span class="species-tag mammal">Nilgiri Tahr</span>
+                        </div>
+                      </div>
+                      <div class="location-tag">
+                        <span class="location-name">Chennai Coastline</span>
+                        <div class="species-tags">
+                          <span class="species-tag reptile">Olive Ridley Turtle</span>
+                          <div class="alert-tag">Recent Alert: 400+ casualties</div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                <div class="col-lg-4">
+                  <div class="conservation-stats">
+                    <h6>Conservation Highlights</h6>
+                    <ul class="stat-list">
+                      <li>
+                        <i class="bi bi-arrow-up-circle-fill text-success"></i>
+                        15.9% increase in Tiger population since 2018
+                      </li>
+                      <li>
+                        <i class="bi bi-exclamation-triangle-fill text-warning"></i>
+                        Urgent protection needed for Olive Ridley nesting sites
+                      </li>
+                      <li>
+                        <i class="bi bi-check-circle-fill text-info"></i>
+                        Successful breeding program for Lion-tailed Macaque
+                      </li>
+                    </ul>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Species Details Table -->
+        <div class="col-lg-12">
+          <div class="card analysis-card">
+            <div class="card-body">
+              <h5 class="card-title">Species Details</h5>
+              <div class="table-responsive">
+                <table class="table table-hover species-table">
+                  <thead>
+                    <tr>
+                      <th>Protected Area</th>
+                      <th>Type</th>
+                      <th>Key Species</th>
+                      <th>Area (sq. km)</th>
+                      <th>Status</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr>
+                      <td>Mudumalai</td>
+                      <td>Tiger Reserve</td>
+                      <td>Tiger, Elephant, Gaur</td>
+                      <td>321</td>
+                      <td>Protected</td>
+                    </tr>
+                    <tr>
+                      <td>Anamalai</td>
+                      <td>Tiger Reserve</td>
+                      <td>Tiger, Lion-tailed Macaque</td>
+                      <td>958</td>
+                      <td>Protected</td>
+                    </tr>
+                    <tr>
+                      <td>Gulf of Mannar</td>
+                      <td>Biosphere Reserve</td>
+                      <td>Dugong, Sea Turtle</td>
+                      <td>10,500</td>
+                      <td>Protected</td>
+                    </tr>
+                    <tr>
+                      <td>Nilgiris</td>
+                      <td>Biosphere Reserve</td>
+                      <td>Tiger, Elephant, Gaur</td>
+                      <td>5,520</td>
+                      <td>Protected</td>
+                    </tr>
+                    <tr>
+                      <td>Point Calimere</td>
+                      <td>Bird Sanctuary</td>
+                      <td>Flamingo, Spoonbill</td>
+                      <td>17.26</td>
+                      <td>Protected</td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <!-- ======= Footer ======= -->
+  <footer id="footer" class="footer">
+    <div class="container">
+      <div class="copyright">
+        &copy; Copyright <strong><span>Tamil Nadu Forest Department</span></strong>. All Rights Reserved
+      </div>
+    </div>
+  </footer><!-- End Footer -->
+
+  <!-- Template Main JS File -->
+  <script src="../static/js/main.js"></script>
+
+  <script>
+    // Species Population Trend Chart (Line Chart)
+    const speciesDistributionCtx = document.getElementById('speciesDistributionChart').getContext('2d');
+    
+    // Get CSS variables
+    const style = getComputedStyle(document.documentElement);
+    const primaryColor = style.getPropertyValue('--primary-color').trim() || '#4CAF50';
+    const secondaryColor = style.getPropertyValue('--secondary-color').trim() || '#2196F3';
+    const accentColor = style.getPropertyValue('--accent-color').trim() || '#FF5722';
+
+    new Chart(speciesDistributionCtx, {
+      type: 'line',
+      data: {
+        labels: ['2018', '2019', '2020', '2021', '2022'],
+        datasets: [{
+          label: 'Tiger Population',
+          data: [264, 275, 285, 295, 306],
+          borderColor: secondaryColor,
+          backgroundColor: `${secondaryColor}20`,
+          tension: 0.4,
+          fill: true
+        },
+        {
+          label: 'Elephant Population',
+          data: [2700, 2800, 2900, 3000, 3100],
+          borderColor: primaryColor,
+          backgroundColor: `${primaryColor}20`,
+          tension: 0.4,
+          fill: true
+        },
+        {
+          label: 'Gaur Population',
+          data: [1500, 1600, 1650, 1700, 1800],
+          borderColor: accentColor,
+          backgroundColor: `${accentColor}20`,
+          tension: 0.4,
+          fill: true
+        }]
+      },
+      options: {
+        responsive: true,
+        maintainAspectRatio: false,
+        plugins: {
+          legend: {
+            position: 'top',
+          },
+          title: {
+            display: true,
+            text: 'Wildlife Population Trends (2018-2022)'
+          }
+        },
+        scales: {
+          y: {
+            beginAtZero: false,
+            grid: {
+              drawBorder: false
+            }
+          },
+          x: {
+            grid: {
+              display: false
+            }
+          }
+        }
+      }
+    });
+
+    // Protected Area Distribution Chart (Pie Chart)
+    const endangeredSpeciesCtx = document.getElementById('endangeredSpeciesChart').getContext('2d');
+    new Chart(endangeredSpeciesCtx, {
+      type: 'pie',
+      data: {
+        labels: ['Tiger Reserves', 'Bird Sanctuaries', 'Wildlife Sanctuaries', 'National Parks', 'Biosphere Reserves'],
+        datasets: [{
+          data: [4, 15, 15, 5, 3],
+          backgroundColor: [
+            secondaryColor + 'CC',
+            primaryColor + 'CC',
+            accentColor + 'CC',
+            '#45a049CC',
+            '#1976D2CC'
+          ],
+          borderWidth: 2,
+          borderColor: '#ffffff'
+        }]
+      },
+      options: {
+        responsive: true,
+        maintainAspectRatio: false,
+        plugins: {
+          legend: {
+            position: 'bottom',
+            labels: {
+              padding: 20
+            }
+          }
+        }
+      }
+    });
+
+  </script>
+
+
+
+  <!-- Add this script at the end of the file, before </body> -->
+  <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+  <script src="{% static 'js/main.js' %}"></script>
+
+  <!-- Add this script before the closing body tag -->
+  <script>
+  document.addEventListener('DOMContentLoaded', function() {
+    const toggleSidebarBtn = document.querySelector('.toggle-sidebar-btn');
+    const body = document.querySelector('body');
+    
+    if (toggleSidebarBtn && body) {
+    // Function to toggle sidebar
+    function toggleSidebar() {
+      body.classList.toggle('toggle-sidebar');
+      
+      // Save state to localStorage
+      const sidebarState = body.classList.contains('toggle-sidebar');
+      localStorage.setItem('sidebarState', sidebarState);
+    }
+    
+    // Add click event listener
+    toggleSidebarBtn.addEventListener('click', toggleSidebar);
+    
+    // Check and apply saved state on page load
+    const savedState = localStorage.getItem('sidebarState');
+    if (savedState === 'true') {
+      body.classList.add('toggle-sidebar');
+        }
+    }
+  });
+  </script>
+
+  <!-- Add this script for tab functionality -->
+  <script>
+    document.addEventListener('DOMContentLoaded', function() {
+      // Tab switching functionality
+      const tabButtons = document.querySelectorAll('.msg-tab-btn');
+      const messageSections = document.querySelectorAll('.message-section');
+
+      tabButtons.forEach(button => {
+        button.addEventListener('click', () => {
+          // Remove active class from all buttons and sections
+          tabButtons.forEach(btn => btn.classList.remove('active'));
+          messageSections.forEach(section => section.classList.remove('active'));
+
+          // Add active class to clicked button and corresponding section
+          button.classList.add('active');
+          const tabId = button.getAttribute('data-tab');
+          document.getElementById(tabId).classList.add('active');
+        });
+      });
+
+      // Auto-refresh notifications every 5 minutes
+      setInterval(() => {
+        // Here you would typically make an API call to fetch new notifications
+        console.log('Checking for new notifications...');
+      }, 300000);
+    });
+  </script>
+
+</body>
+
+
+
+</html>

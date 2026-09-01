@@ -1,0 +1,56 @@
+<body>
+    <h1>YOLO Animal Detection (Rabbit and Lion)</h1>
+    <form id="video-form">
+        <input type="text" id="video-url" placeholder="Enter YouTube video URL" required />
+        <button type="submit">Start Detection</button>
+    </form>
+
+    <div id="video-container">
+        <h2>Live Video Feed</h2>
+        <iframe id="youtube-player" width="640" height="360" frameborder="0" allowfullscreen></iframe>
+    </div>
+
+    <div id="frames-container">
+        <h2>Processed Frames</h2>
+    </div>
+
+    <script>
+        document.getElementById("video-form").addEventListener("submit", function (e) {
+            e.preventDefault();
+
+            const videoUrl = document.getElementById("video-url").value;
+
+            // Extract YouTube Video ID
+            const videoId = new URL(videoUrl).searchParams.get("v") || videoUrl.split("/").pop();
+            const embedUrl = `https://www.youtube.com/embed/${videoId}?autoplay=1`;
+
+            // Update YouTube Player
+            document.getElementById("youtube-player").src = embedUrl;
+
+            // Start real-time processing
+            const eventSource = new EventSource(`/stream_video?video_url=${encodeURIComponent(videoUrl)}`);
+
+            eventSource.onmessage = function (event) {
+                const data = JSON.parse(event.data);
+                if (data.frame) {
+                    const framesContainer = document.getElementById("frames-container");
+                    framesContainer.innerHTML = ''; // Clear previous frame
+
+                    const img = document.createElement("img");
+                    img.src = 'data:image/jpeg;base64,' + data.frame;
+                    framesContainer.appendChild(img);
+
+                    // Display detections
+                    const detections = data.detections.map(detection => {
+                        return `<p>${detection.class}: ${detection.confidence.toFixed(2)}</p>`;
+                    }).join('');
+                    framesContainer.innerHTML += detections;
+                }
+            };
+
+            eventSource.onerror = function () {
+                eventSource.close();
+            };
+        });
+    </script>
+</body>

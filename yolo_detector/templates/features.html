@@ -1,0 +1,251 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Features - Animal Detector</title>
+    <link rel="stylesheet" href="../static/css/features.css">
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+</head>
+<body>
+    <!-- Navigation -->
+    <nav class="navbar">
+        <div class="nav-container">
+            <a href="/" class="logo">
+                <img src="{% static 'images/logo1.webp' %}" alt="AI Animal Detector Logo" class="logo-img">
+                <span>Animal Detector</span>
+            </a>
+            <div class="nav-links">
+                <a href="/">Home</a>
+                <a href="/features">Features</a>
+                <a href="/howitswork">How It Works</a>
+                <a href="/dashboard">Dashboard</a>
+                <a href="/contact">Contact</a>
+                <a href="/login" class="login-btn">Login</a>
+                <a href="/signup" class="signup-btn">Sign Up</a>
+            </div>
+            <div class="menu-toggle">
+                <i class="fas fa-bars"></i>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <section class="hero">
+        <div class="hero-container">
+            <h1>Powerful Features for Wildlife Detection</h1>
+            <p>Discover all the advanced capabilities that make Animal Detector the leading choice for wildlife monitoring</p>
+        </div>
+    </section>
+
+    <!-- Main Features -->
+    <section class="main-features">
+        <div class="container">
+            <div class="feature-grid">
+                <div class="feature-card">
+                    <div class="feature-icon">
+                        <i class="fas fa-camera"></i>
+                    </div>
+                    <h3>Smart Camera Integration</h3>
+                    <p>Connect with any modern wildlife camera for seamless monitoring and detection.</p>
+                    <ul class="feature-list">
+                        <li><i class="fas fa-check"></i> Multiple camera support</li>
+                        <li><i class="fas fa-check"></i> Wireless connectivity</li>
+                        <li><i class="fas fa-check"></i> Night vision compatible</li>
+                    </ul>
+                </div>
+
+                <div class="feature-card">
+                    <div class="feature-icon">
+                        <i class="fas fa-brain"></i>
+                    </div>
+                    <h3>Advanced AI Detection</h3>
+                    <p>State-of-the-art AI algorithms for accurate wildlife identification and tracking.</p>
+                    <ul class="feature-list">
+                        <li><i class="fas fa-check"></i> 99% accuracy rate</li>
+                        <li><i class="fas fa-check"></i> Species classification</li>
+                        <li><i class="fas fa-check"></i> Behavior analysis</li>
+                    </ul>
+                </div>
+
+                <div class="feature-card">
+                    <div class="feature-icon">
+                        <i class="fas fa-bell"></i>
+                    </div>
+                    <h3>Real-time Alerts</h3>
+                    <p>Instant notifications when wildlife is detected in your monitored areas.</p>
+                    <ul class="feature-list">
+                        <li><i class="fas fa-check"></i> Custom alert rules</li>
+                        <li><i class="fas fa-check"></i> Multi-channel notifications</li>
+                        <li><i class="fas fa-check"></i> Priority alerts</li>
+                    </ul>
+                </div>
+
+                <div class="feature-card">
+                    <div class="feature-icon">
+                        <i class="fas fa-chart-line"></i>
+                    </div>
+                    <h3>Analytics Dashboard</h3>
+                    <p>Comprehensive data analysis and visualization tools for insights.</p>
+                    <ul class="feature-list">
+                        <li><i class="fas fa-check"></i> Custom reports</li>
+                        <li><i class="fas fa-check"></i> Trend analysis</li>
+                        <li><i class="fas fa-check"></i> Export capabilities</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Advanced Features -->
+    <section class="advanced-features">
+        <div class="container">
+            <h2>Advanced Capabilities</h2>
+            <div class="features-showcase">
+                <div class="feature-item">
+                    <img src="../static/images/pig.webp" alt="Machine Learning">
+                    <div class="feature-content">
+                        <h3>Machine Learning</h3>
+                        <p>Our system continuously learns and improves its detection accuracy through advanced machine learning algorithms.</p>
+                        <ul>
+                            <li>Adaptive learning</li>
+                            <li>Pattern recognition</li>
+                            <li>Behavioral analysis</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <div class="feature-item reverse">
+                    <img src="../static/images/peacock.webp" alt="Data Analytics">
+                    <div class="feature-content">
+                        <h3>Data Analytics</h3>
+                        <p>Transform raw detection data into actionable insights with our powerful analytics tools.</p>
+                        <ul>
+                            <li>Population tracking</li>
+                            <li>Migration patterns</li>
+                            <li>Habitat analysis</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <div class="feature-item">
+                    <img src="../static/images/leopard.jpg" alt="Integration">
+                    <div class="feature-content">
+                        <h3>Easy Integration</h3>
+                        <p>Seamlessly integrate with existing systems and expand functionality through our API.</p>
+                        <ul>
+                            <li>REST API access</li>
+                            <li>Custom webhooks</li>
+                            <li>Third-party integration</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Comparison Section -->
+    <section class="comparison">
+        <div class="container">
+            <h2>Why Choose Animal Detector?</h2>
+            <div class="comparison-table">
+                <div class="comparison-header">
+                    <div class="empty-cell"></div>
+                    <div class="plan">Basic</div>
+                    <div class="plan featured">Professional</div>
+                    <div class="plan">Enterprise</div>
+                </div>
+                <div class="comparison-row">
+                    <div class="feature-name">AI Detection</div>
+                    <div class="check"><i class="fas fa-check"></i></div>
+                    <div class="check"><i class="fas fa-check"></i></div>
+                    <div class="check"><i class="fas fa-check"></i></div>
+                </div>
+                <div class="comparison-row">
+                    <div class="feature-name">Real-time Alerts</div>
+                    <div class="check"><i class="fas fa-check"></i></div>
+                    <div class="check"><i class="fas fa-check"></i></div>
+                    <div class="check"><i class="fas fa-check"></i></div>
+                </div>
+                <div class="comparison-row">
+                    <div class="feature-name">Analytics Dashboard</div>
+                    <div class="cross"><i class="fas fa-times"></i></div>
+                    <div class="check"><i class="fas fa-check"></i></div>
+                    <div class="check"><i class="fas fa-check"></i></div>
+                </div>
+                <div class="comparison-row">
+                    <div class="feature-name">API Access</div>
+                    <div class="cross"><i class="fas fa-times"></i></div>
+                    <div class="check"><i class="fas fa-check"></i></div>
+                    <div class="check"><i class="fas fa-check"></i></div>
+                </div>
+                <div class="comparison-row">
+                    <div class="feature-name">Custom Integration</div>
+                    <div class="cross"><i class="fas fa-times"></i></div>
+                    <div class="cross"><i class="fas fa-times"></i></div>
+                    <div class="check"><i class="fas fa-check"></i></div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- CTA Section -->
+    <section class="cta">
+        <div class="container">
+            <h2>Ready to Get Started?</h2>
+            <p>Join thousands of users who are already using Animal Detector to monitor and protect wildlife.</p>
+            <div class="cta-buttons">
+                <a href="/signup" class="primary-btn">Start Free Trial</a>
+                <a href="/contact" class="secondary-btn">Contact Sales</a>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="footer-container">
+            <div class="footer-content">
+                <div class="footer-section">
+                    <h3>Animal Detector</h3>
+                    <p>Smart wildlife detection using advanced AI technology.</p>
+                </div>
+                <div class="footer-section">
+                    <h3>Quick Links</h3>
+                    <a href="/">Home</a>
+                    <a href="/howitswork">How It Works</a>
+                    <a href="/pricing">Pricing</a>
+                    <a href="/contact">Contact</a>
+                </div>
+                <div class="footer-section">
+                    <h3>Contact Us</h3>
+                    <p>Email: info@animaldetector.com</p>
+                    <p>Phone: (555) 123-4567</p>
+                </div>
+                <div class="footer-section">
+                    <h3>Follow Us</h3>
+                    <div class="social-links">
+                        <a href="#"><i class="fab fa-facebook"></i></a>
+                        <a href="#"><i class="fab fa-twitter"></i></a>
+                        <a href="#"><i class="fab fa-linkedin"></i></a>
+                        <a href="#"><i class="fab fa-instagram"></i></a>
+                    </div>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p>&copy; 2024 Animal Detector. All rights reserved.</p>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        // Mobile menu toggle
+        document.querySelector('.menu-toggle').addEventListener('click', function() {
+            document.querySelector('.nav-links').classList.toggle('active');
+        });
+    </script>
+</body>
+</html>

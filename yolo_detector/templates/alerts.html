@@ -1,0 +1,876 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta content="width=device-width, initial-scale=1.0" name="viewport">
+  <title>Code Wizards Admin-Dashboard</title>
+  <meta content="" name="description">
+  <meta content="" name="keywords">
+
+  <!-- Favicons -->
+  <link href="assets/img/favicon.png" rel="icon">
+  <link href="assets/img/apple-touch-icon.png" rel="apple-touch-icon">
+
+  <!-- Google Fonts -->
+  <link href="https://fonts.gstatic.com" rel="preconnect">
+  <link href="https://fonts.googleapis.com/css?family=Open+Sans:300,300i,400,400i,600,600i,700,700i|Nunito:300,300i,400,400i,600,600i,700,700i|Poppins:300,300i,400,400i,500,500i,600,600i,700,700i" rel="stylesheet">
+
+  <!-- Vendor CSS Files -->
+  <link href="{% static 'vendor/bootstrap/css/bootstrap.min.css' %}" rel="stylesheet">
+<link href="{% static 'vendor/bootstrap-icons/bootstrap-icons.css' %}" rel="stylesheet">
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" crossorigin=""/>
+
+  <!-- Template Main CSS File -->
+  <link href="{% static 'css/admindashboard.css' %}" rel="stylesheet">
+  <style>
+    /* Update existing styles and add new ones */
+    
+    /* Color Variables */
+    :root {
+      --primary-color: #1a472a;
+      --secondary-color: #2ecc71;
+      --accent-color: #f1c40f;
+      --danger-color: #e74c3c;
+      --success-color: #27ae60;
+      --warning-color: #f39c12;
+      --light-bg: #f8f9fa;
+      --dark-bg: #2c3e50;
+    }
+
+    /* Header styles update */
+    .header {
+      background:  #4caf50;
+      padding: 15px 0;
+      box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+    }
+
+    .header .d-flex {
+      width: 100%;
+      justify-content: space-between;
+      padding: 0 20px;
+    }
+
+    .header .logo {
+      display: flex;
+      align-items: center;
+      gap: 15px;
+      margin-left: 15px;
+    }
+
+    .header .logo img {
+      max-height: 60px;
+      object-fit: contain;
+    }
+
+    .header .logo span {
+      font-size: 20px;
+      white-space: nowrap;
+      color: #ffffff;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+
+
+    .header .toggle-sidebar-btn {
+      color: #ffffff;
+      font-size: 1.5rem;
+      margin-left: 0;
+      order: -1;
+    }
+
+    .header-nav {
+      margin-left: auto;
+    }
+
+    .header-nav .nav-link {
+      color: #ffffff;
+      padding: 0.5rem 1rem;
+      font-weight: 500;
+    }
+
+    .header-nav .nav-link:hover {
+      color: #90EE90;
+    }
+
+    .header-nav .dropdown-menu {
+      background: #ffffff;
+      border: none;
+      box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    }
+
+    .header-nav .dropdown-item {
+      color: #333;
+      padding: 0.5rem 1rem;
+    }
+
+    .header-nav .dropdown-item:hover {
+      background: #f8f9fa;
+      color: #1a472a;
+    }
+
+    .header-nav .badge {
+      background: #ff4444;
+      color: #ffffff;
+    }
+
+    /* Sidebar menu styles */
+    .sidebar .nav-item .nav-link {
+      color: #000000;
+      font-weight: 500;
+      transition: all 0.3s ease;
+    }
+
+    .sidebar .nav-item .nav-link:hover,
+    .sidebar .nav-item .nav-link.active {
+      color: #1a472a;
+      background: rgba(26, 71, 42, 0.1);
+    }
+
+    .sidebar .nav-item .nav-link i {
+      color: #000000;
+      transition: all 0.3s ease;
+    }
+
+    .sidebar .nav-item .nav-link:hover i,
+    .sidebar .nav-item .nav-link.active i {
+      color: #1a472a;
+    }
+
+    /* Enhanced Dashboard Card */
+    .dashboard-card {
+      border: none;
+      background: linear-gradient(to bottom right, #ffffff, #f8f9fa);
+      box-shadow: 0 0 25px rgba(0,0,0,0.08);
+      transition: all 0.3s ease;
+      border-radius: 15px;
+    }
+
+    .dashboard-card:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 8px 30px rgba(0,0,0,0.12);
+    }
+
+    .card-title {
+      color: var(--primary-color);
+      font-weight: 700;
+      border-bottom: 3px solid var(--secondary-color);
+      padding-bottom: 15px;
+      margin-bottom: 25px;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+    }
+
+    /* Colorful Location Selector */
+    .location-selector {
+      background: linear-gradient(135deg, #ffffff, var(--light-bg));
+      border-radius: 15px;
+      padding: 25px;
+      margin-bottom: 30px;
+      border: 2px solid rgba(46, 204, 113, 0.1);
+    }
+
+    .form-select {
+      border: 2px solid #e0e0e0;
+      border-radius: 10px;
+      padding: 12px;
+      font-size: 1rem;
+      transition: all 0.3s ease;
+      background-color: white;
+    }
+
+    .form-select:focus {
+      border-color: var(--secondary-color);
+      box-shadow: 0 0 0 0.25rem rgba(46, 204, 113, 0.25);
+    }
+
+    .form-label {
+      font-weight: 600;
+      color: var(--dark-bg);
+      margin-bottom: 10px;
+      display: flex;
+      align-items: center;
+      font-size: 1.1rem;
+    }
+
+    .form-label i {
+      color: var(--secondary-color);
+      margin-right: 8px;
+    }
+
+    /* Enhanced Camera Grid */
+    .camera-grid {
+      gap: 25px;
+    }
+
+    .camera-card {
+      border: none;
+      border-radius: 15px;
+      overflow: hidden;
+      background: white;
+      box-shadow: 0 4px 20px rgba(0,0,0,0.08);
+      transition: all 0.3s ease;
+    }
+
+    .camera-card:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 8px 25px rgba(0,0,0,0.15);
+    }
+
+    .camera-feed {
+      position: relative;
+      background: #000;
+      border-radius: 12px;
+      overflow: hidden;
+    }
+
+    .camera-controls {
+      padding: 15px;
+      background: linear-gradient(to right, #f8f9fa, #ffffff);
+      border-top: 1px solid rgba(0,0,0,0.05);
+    }
+
+    .btn-control {
+      padding: 8px 15px;
+      border-radius: 8px;
+      transition: all 0.3s ease;
+      border: 2px solid transparent;
+      background: white;
+    }
+
+    .btn-control:hover {
+      background: var(--secondary-color);
+      color: white;
+      transform: translateY(-2px);
+    }
+
+    /* Enhanced Badge Styles */
+    .badge {
+      padding: 8px 16px;
+      font-weight: 600;
+      letter-spacing: 0.5px;
+      border-radius: 8px;
+    }
+
+    .badge-camera {
+      background: linear-gradient(45deg, var(--danger-color), #ff6b6b);
+      box-shadow: 0 2px 10px rgba(231, 76, 60, 0.3);
+    }
+
+    .badge-location {
+      background: linear-gradient(45deg, var(--dark-bg), #34495e);
+      box-shadow: 0 2px 10px rgba(44, 62, 80, 0.3);
+    }
+
+    /* Enhanced Status Indicator */
+    .status-live {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-weight: 600;
+      color: var(--success-color);
+      padding: 6px 12px;
+      border-radius: 20px;
+      background: rgba(39, 174, 96, 0.1);
+    }
+
+    .status-live i {
+      font-size: 10px;
+      animation: pulse 2s infinite;
+    }
+
+    @keyframes pulse {
+      0% { opacity: 1; transform: scale(1); }
+      50% { opacity: 0.5; transform: scale(1.2); }
+      100% { opacity: 1; transform: scale(1); }
+    }
+
+    /* Enhanced Loading Animation */
+    .loading-overlay {
+      background: rgba(0,0,0,0.8);
+      backdrop-filter: blur(4px);
+    }
+
+    .loading-spinner {
+      width: 50px;
+      height: 50px;
+      border: 4px solid rgba(255,255,255,0.3);
+      border-top: 4px solid var(--secondary-color);
+      border-radius: 50%;
+      animation: spin 1s linear infinite;
+    }
+
+    @keyframes spin {
+      0% { transform: rotate(0deg); }
+      100% { transform: rotate(360deg); }
+    }
+
+    /* Responsive Adjustments */
+    @media (max-width: 768px) {
+      .camera-grid {
+        gap: 15px;
+      }
+
+      .form-select {
+        padding: 10px;
+      }
+
+      .badge {
+        padding: 6px 10px;
+        font-size: 0.8rem;
+      }
+    }
+  </style>
+
+ 
+</head>
+
+<body>
+
+  <!-- ======= Header ======= -->
+  <header id="header" class="header fixed-top d-flex align-items-center">
+    <div class="d-flex align-items-center justify-content-start">
+      <a href="{% url 'home' %}" class="logo">
+        <img src="{% static 'images/logo1.webp' %}" alt="AI Animal Detector Logo" class="logo-img">
+        <span>Animal Detector</span>
+    </a>
+    </div><!-- End Logo -->
+
+    <i class="bi bi-list toggle-sidebar-btn text-white me-3"></i>
+
+    <nav class="header-nav ms-auto">
+      <ul class="d-flex align-items-center">
+        <li class="nav-item dropdown pe-3">
+          <ul class="dropdown-menu dropdown-menu-end dropdown-menu-arrow profile">
+            <li class="dropdown-header">
+              <h6>Kevin Anderson</h6>
+              <span>Web Designer</span>
+            </li>
+            <li>
+              <hr class="dropdown-divider">
+            </li>
+
+            <li>
+              <a class="dropdown-item d-flex align-items-center" href="users-profile.html">
+                <i class="bi bi-person"></i>
+                <span>My Profile</span>
+              </a>
+            </li>
+            <li>
+              <hr class="dropdown-divider">
+            </li>
+
+            <li>
+              <a class="dropdown-item d-flex align-items-center" href="users-profile.html">
+                <i class="bi bi-gear"></i>
+                <span>Account Settings</span>
+              </a>
+            </li>
+            <li>
+              <hr class="dropdown-divider">
+            </li>
+
+            <li>
+              <a class="dropdown-item d-flex align-items-center" href="pages-faq.html">
+                <i class="bi bi-question-circle"></i>
+                <span>Need Help?</span>
+              </a>
+            </li>
+            <li>
+              <hr class="dropdown-divider">
+            </li>
+
+            <li>
+              <a class="dropdown-item d-flex align-items-center" href="{% url 'home' %}" onclick="return confirm('Are you sure you want to logout?');">
+                <i class="bi bi-box-arrow-right"></i>
+                <span>Sign Out</span>
+              </a>
+            </li>
+          </ul><!-- End Profile Dropdown Items -->
+        </li><!-- End Profile Nav -->
+      </ul>
+    </nav><!-- End Icons Navigation -->
+  </header>
+
+  <!-- ======= Sidebar ======= -->
+  <aside id="sidebar" class="sidebar">
+
+    <ul class="sidebar-nav" id="sidebar-nav">
+
+      <li class="nav-item">
+        <a class="nav-link" href="{% url 'admin-dashboard' %}">
+          <i class="bi bi-grid"></i>
+          <span>Dashboard</span>
+        </a>
+      </li><!-- End Dashboard Nav -->
+
+      <li class="nav-item">
+        <a class="nav-link" href="{% url 'livemonitoring' %}">
+          <i class="bi bi-camera-video"></i>
+          <span>Live Monitoring</span>
+        </a>
+      </li><!-- End Live Monitoring Nav -->
+
+      <li class="nav-item">
+        <a class="nav-link" href="{% url 'alerts' %}">
+          <i class="bi bi-bell"></i>
+          <span>Alerts</span>
+        </a>
+      </li><!-- End Alerts Nav -->
+
+      <li class="nav-item">
+        <a class="nav-link" href="{% url 'analysis' %}">
+          <i class="bi bi-graph-up"></i>
+          <span>Analysis</span>
+        </a>
+      </li><!-- End Analysis Nav -->
+
+      <li class="nav-item">
+        <a class="nav-link" href="{% url 'index' %}">
+          <i class="bi bi-search"></i>
+          <span>Detect</span>
+        </a>
+      </li>
+
+      <li class="nav-heading mt-3">Account</li>
+
+      <li class="nav-item">
+        <a class="nav-link" href="#">
+          <i class="bi bi-box-arrow-right"></i>
+          <span>Logout</span>
+        </a>
+      </li><!-- End Logout Nav -->
+
+    </ul>
+
+    <style>
+      .sidebar {
+        min-height: 100vh;
+      }
+      .nav-link {
+        color: #000000;
+        font-weight: 500;
+        transition: all 0.3s ease;
+      }
+
+      .nav-link:hover,
+      .nav-link.active {
+        color: #1a472a;
+        background: rgba(26, 71, 42, 0.1);
+      }
+
+      .nav-link i {
+        color: #000000;
+        transition: all 0.3s ease;
+      }
+
+      .nav-link:hover i,
+      .nav-link.active i {
+        color: #1a472a;
+      }
+
+      .nav-heading {
+        font-size: 0.9rem;
+        font-weight: 600;
+        color: #64748b;
+        text-transform: uppercase;
+        padding: 0.5rem 1rem;
+        margin-top: 1rem;
+        border-top: 1px solid #e2e8f0;
+      }
+    </style>
+
+  </aside><!-- End Sidebar-->
+
+  <main id="main" class="main">
+
+    <div class="pagetitle">
+      <h1>Alerts</h1>
+      <nav>
+        <ol class="breadcrumb">
+          <li class="breadcrumb-item"><a href="{% url 'home' %}">Home</a></li>
+          <li class="breadcrumb-item active">Alerts</li>
+        </ol>
+      </nav>
+    </div><!-- End Page Title -->
+
+    <section class="section">
+      <div class="row">
+        <!-- Alert Statistics -->
+        <div class="col-12">
+          <div class="card recent-alerts overflow-auto">
+            <div class="card-body">
+              <h5 class="card-title">Alert Statistics <span>| Last 24 hours</span></h5>
+
+              <div class="row">
+                <div class="col-xxl-3 col-md-6">
+                  <div class="card info-card warning-card">
+                    <div class="card-body">
+                      <h5 class="card-title">Total Alerts</h5>
+                      <div class="d-flex align-items-center">
+                        <div class="card-icon rounded-circle d-flex align-items-center justify-content-center">
+                          <i class="bi bi-bell"></i>
+                        </div>
+                        <div class="ps-3">
+                          <h6>15</h6>
+                          <span class="text-muted small pt-2 ps-1">alerts today</span>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+                <div class="col-xxl-3 col-md-6">
+                  <div class="card info-card danger-card">
+                    <div class="card-body">
+                      <h5 class="card-title">High Priority</h5>
+                      <div class="d-flex align-items-center">
+                        <div class="card-icon rounded-circle d-flex align-items-center justify-content-center">
+                          <i class="bi bi-exclamation-triangle"></i>
+                        </div>
+                        <div class="ps-3">
+                          <h6>5</h6>
+                          <span class="text-muted small pt-2 ps-1">urgent alerts</span>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+                <div class="col-xxl-3 col-md-6">
+                  <div class="card info-card success-card">
+                    <div class="card-body">
+                      <h5 class="card-title">Resolved</h5>
+                      <div class="d-flex align-items-center">
+                        <div class="card-icon rounded-circle d-flex align-items-center justify-content-center">
+                          <i class="bi bi-check-circle"></i>
+                        </div>
+                        <div class="ps-3">
+                          <h6>8</h6>
+                          <span class="text-muted small pt-2 ps-1">resolved today</span>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+                <div class="col-xxl-3 col-md-6">
+                  <div class="card info-card primary-card">
+                    <div class="card-body">
+                      <h5 class="card-title">Pending</h5>
+                      <div class="d-flex align-items-center">
+                        <div class="card-icon rounded-circle d-flex align-items-center justify-content-center">
+                          <i class="bi bi-clock"></i>
+                        </div>
+                        <div class="ps-3">
+                          <h6>7</h6>
+                          <span class="text-muted small pt-2 ps-1">pending review</span>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Recent Alerts -->
+        <div class="col-12">
+          <div class="card recent-alerts">
+            <div class="card-body">
+              <h5 class="card-title">Recent Alerts <span>| Today</span></h5>
+
+              <div class="alert-list">
+                <!-- Wild Elephant Sighting -->
+                <div class="alert-item high-priority">
+                  <div class="alert-header d-flex justify-content-between align-items-center">
+                    <div class="alert-type">
+                      <i class="bi bi-exclamation-diamond-fill text-danger"></i>
+                      <span class="badge bg-danger">High Priority</span>
+                      <span class="alert-time ms-2"><i class="bi bi-clock"></i> 15 minutes ago</span>
+                    </div>
+                    <div class="alert-actions">
+                      <button class="btn btn-sm btn-outline-primary"><i class="bi bi-eye"></i> View Details</button>
+                      <button class="btn btn-sm btn-outline-success"><i class="bi bi-check2"></i> Mark Resolved</button>
+                    </div>
+                  </div>
+                  <div class="alert-content mt-2">
+                    <h6>Wild Elephant Sighting in Madurai District</h6>
+                    <p>A herd of wild elephants spotted near agricultural lands in Madurai district. Local farmers reported potential crop damage.</p>
+                    <div class="alert-details">
+                      <span><i class="bi bi-geo-alt"></i> Location: Madurai East</span>
+                      <span><i class="bi bi-people"></i> Reported by: Local Farmer</span>
+                      <span><i class="bi bi-camera"></i> Evidence: Photo Available</span>
+                    </div>
+                  </div>
+                </div>
+
+                <!-- Leopard Movement -->
+                <div class="alert-item medium-priority">
+                  <div class="alert-header d-flex justify-content-between align-items-center">
+                    <div class="alert-type">
+                      <i class="bi bi-exclamation-triangle-fill text-warning"></i>
+                      <span class="badge bg-warning text-dark">Medium Priority</span>
+                      <span class="alert-time ms-2"><i class="bi bi-clock"></i> 45 minutes ago</span>
+                    </div>
+                    <div class="alert-actions">
+                      <button class="btn btn-sm btn-outline-primary"><i class="bi bi-eye"></i> View Details</button>
+                      <button class="btn btn-sm btn-outline-success"><i class="bi bi-check2"></i> Mark Resolved</button>
+                    </div>
+                  </div>
+                  <div class="alert-content mt-2">
+                    <h6>Leopard Footprints Found Near Water Source</h6>
+                    <p>Fresh leopard footprints discovered near a water source close to Kodaikanal. Forest rangers have been notified for monitoring.</p>
+                    <div class="alert-details">
+                      <span><i class="bi bi-geo-alt"></i> Location: Kodaikanal</span>
+                      <span><i class="bi bi-people"></i> Reported by: Forest Guard</span>
+                      <span><i class="bi bi-camera"></i> Evidence: Footprint Photos</span>
+                    </div>
+                  </div>
+                </div>
+
+                <!-- Bear Sighting -->
+                <div class="alert-item medium-priority">
+                  <div class="alert-header d-flex justify-content-between align-items-center">
+                    <div class="alert-type">
+                      <i class="bi bi-exclamation-triangle-fill text-warning"></i>
+                      <span class="badge bg-warning text-dark">Medium Priority</span>
+                      <span class="alert-time ms-2"><i class="bi bi-clock"></i> 1 hour ago</span>
+                    </div>
+                    <div class="alert-actions">
+                      <button class="btn btn-sm btn-outline-primary"><i class="bi bi-eye"></i> View Details</button>
+                      <button class="btn btn-sm btn-outline-success"><i class="bi bi-check2"></i> Mark Resolved</button>
+                    </div>
+                  </div>
+                  <div class="alert-content mt-2">
+                    <h6>Sloth Bear with Cubs Spotted</h6>
+                    <p>Sloth bear with two cubs seen near honey collection area in Theni district. Local honey collectors advised to avoid the area.</p>
+                    <div class="alert-details">
+                      <span><i class="bi bi-geo-alt"></i> Location: Theni</span>
+                      <span><i class="bi bi-people"></i> Reported by: Honey Collector</span>
+                      <span><i class="bi bi-camera"></i> Evidence: Video Available</span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+  </main>
+
+  <style>
+    /* Alert Cards Styling */
+    .info-card {
+      padding: 20px;
+      border-radius: 15px;
+      box-shadow: 0 5px 20px rgba(0, 0, 0, 0.1);
+      transition: all 0.3s ease;
+    }
+
+    .info-card:hover {
+      transform: translateY(-5px);
+    }
+
+    .warning-card .card-icon {
+      background: rgba(255, 193, 7, 0.2);
+      color: #ffc107;
+    }
+
+    .danger-card .card-icon {
+      background: rgba(220, 53, 69, 0.2);
+      color: #dc3545;
+    }
+
+    .success-card .card-icon {
+      background: rgba(25, 135, 84, 0.2);
+      color: #198754;
+    }
+
+    .primary-card .card-icon {
+      background: rgba(13, 110, 253, 0.2);
+      color: #0d6efd;
+    }
+
+    .card-icon {
+      width: 50px;
+      height: 50px;
+      font-size: 24px;
+    }
+
+    /* Alert List Styling */
+    .alert-list {
+      display: flex;
+      flex-direction: column;
+      gap: 20px;
+    }
+
+    .alert-item {
+      background: #fff;
+      border-radius: 10px;
+      padding: 20px;
+      box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+      border-left: 5px solid;
+      transition: all 0.3s ease;
+    }
+
+    .alert-item:hover {
+      transform: translateX(5px);
+    }
+
+    .high-priority {
+      border-left-color: #dc3545;
+    }
+
+    .medium-priority {
+      border-left-color: #ffc107;
+    }
+
+    .low-priority {
+      border-left-color: #0dcaf0;
+    }
+
+    .alert-type {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .alert-time {
+      color: #6c757d;
+      font-size: 0.9rem;
+    }
+
+    .alert-content h6 {
+      color: #2c3e50;
+      margin-bottom: 10px;
+      font-weight: 600;
+    }
+
+    .alert-content p {
+      color: #6c757d;
+      margin-bottom: 10px;
+    }
+
+    .alert-details {
+      display: flex;
+      gap: 20px;
+      font-size: 0.9rem;
+      color: #6c757d;
+    }
+
+    .alert-details span {
+      display: flex;
+      align-items: center;
+      gap: 5px;
+    }
+
+    .alert-actions {
+      display: flex;
+      gap: 10px;
+    }
+
+    @media (max-width: 768px) {
+      .alert-header {
+        flex-direction: column;
+        gap: 10px;
+      }
+
+      .alert-details {
+        flex-direction: column;
+        gap: 5px;
+      }
+    }
+
+    /* Main container min-height to ensure footer stays at bottom */
+    #main {
+      min-height: calc(100vh - 160px); /* Adjust based on header + footer height */
+      padding-bottom: 60px; /* Space for footer */
+    }
+
+    /* Footer styling */
+    .footer {
+      background-color: #000000;
+      color: #ffffff;
+      padding: 20px 0;
+      width: 100%;
+      position: relative;
+      margin-top: auto;
+      text-align: center;
+      z-index: 100;
+    }
+
+    .footer .copyright {
+      margin-bottom: 10px;
+    }
+
+    .footer .credits {
+      font-size: 0.9rem;
+      color: #cccccc;
+    }
+
+    .footer a {
+      color: #4caf50;
+      text-decoration: none;
+      transition: color 0.3s ease;
+    }
+
+    .footer a:hover {
+      color: #66bb6a;
+      text-decoration: underline;
+    }
+
+    .footer strong span {
+      color: #4caf50;
+    }
+
+    /* Wrapper to ensure proper layout */
+    body {
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+    }
+  </style>
+
+  <!-- ======= Footer ======= -->
+  <footer id="footer" class="footer">
+    <div class="container">
+      <div class="copyright">
+        &copy; Copyright <strong><span>Tamil Nadu Forest Department</span></strong>. All Rights Reserved
+      </div>
+    </div>
+  </footer><!-- End Footer -->
+
+  <script>
+    // Add this script before the closing body tag
+    document.addEventListener('DOMContentLoaded', function() {
+      const toggleSidebarBtn = document.querySelector('.toggle-sidebar-btn');
+      const body = document.querySelector('body');
+      
+      // Function to toggle sidebar
+      function toggleSidebar() {
+        body.classList.toggle('toggle-sidebar');
+        
+        // Save state to localStorage
+        const sidebarState = body.classList.contains('toggle-sidebar');
+        localStorage.setItem('sidebarState', sidebarState);
+      }
+      
+      // Add click event listener
+      toggleSidebarBtn.addEventListener('click', toggleSidebar);
+      
+      // Check and apply saved state on page load
+      const savedState = localStorage.getItem('sidebarState');
+      if (savedState === 'true') {
+        body.classList.add('toggle-sidebar');
+      }
+    });
+  </script>
+
+</body>
+
+</html>

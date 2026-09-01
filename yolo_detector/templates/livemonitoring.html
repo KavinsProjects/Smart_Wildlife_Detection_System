@@ -1,0 +1,879 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="utf-8">
+  <meta content="width=device-width, initial-scale=1.0" name="viewport">
+
+  <title>Code Wizards Admin-Dashboard</title>
+  <meta content="" name="description">
+  <meta content="" name="keywords">
+
+  <!-- Favicons -->
+  <link href="assets/img/favicon.png" rel="icon">
+  <link href="assets/img/apple-touch-icon.png" rel="apple-touch-icon">
+
+  <!-- Google Fonts -->
+  <link href="https://fonts.gstatic.com" rel="preconnect">
+  <link href="https://fonts.googleapis.com/css?family=Open+Sans:300,300i,400,400i,600,600i,700,700i|Nunito:300,300i,400,400i,600,600i,700,700i|Poppins:300,300i,400,400i,500,500i,600,600i,700,700i" rel="stylesheet">
+
+  <!-- Vendor CSS Files -->
+  <link href="{% static 'vendor/bootstrap/css/bootstrap.min.css' %}" rel="stylesheet">
+<link href="{% static 'vendor/bootstrap-icons/bootstrap-icons.css' %}" rel="stylesheet">
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" crossorigin=""/>
+
+  <!-- Template Main CSS File -->
+  <link href="{% static 'css/admindashboard.css' %}" rel="stylesheet">
+  <style>
+    /* Update existing styles and add new ones */
+    
+    /* Color Variables */
+    :root {
+      --primary-color: #1a472a;
+      --secondary-color: #2ecc71;
+      --accent-color: #f1c40f;
+      --danger-color: #e74c3c;
+      --success-color: #27ae60;
+      --warning-color: #f39c12;
+      --light-bg: #f8f9fa;
+      --dark-bg: #2c3e50;
+    }
+
+    /* Header styles update */
+    .header {
+      background:  #4caf50;
+      padding: 15px 0;
+      box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+    }
+
+    .header .d-flex {
+      width: 100%;
+      justify-content: space-between;
+      padding: 0 20px;
+    }
+
+    .header .logo {
+      display: flex;
+      align-items: center;
+      gap: 15px;
+      margin-left: 15px;
+    }
+
+    .header .logo img {
+      max-height: 60px;
+      object-fit: contain;
+    }
+
+    .header .logo span {
+      font-size: 1.2rem;
+      white-space: nowrap;
+      color: #ffffff;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+
+
+    .header .toggle-sidebar-btn {
+      color: #ffffff;
+      font-size: 1.5rem;
+      margin-left: 0;
+      order: -1;
+    }
+
+    .header-nav {
+      margin-left: auto;
+    }
+
+    .header-nav .nav-link {
+      color: #ffffff;
+      padding: 0.5rem 1rem;
+      font-weight: 500;
+    }
+
+    .header-nav .nav-link:hover {
+      color: #90EE90;
+    }
+
+    .header-nav .dropdown-menu {
+      background: #ffffff;
+      border: none;
+      box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    }
+
+    .header-nav .dropdown-item {
+      color: #333;
+      padding: 0.5rem 1rem;
+    }
+
+    .header-nav .dropdown-item:hover {
+      background: #f8f9fa;
+      color: #1a472a;
+    }
+
+    .header-nav .badge {
+      background: #ff4444;
+      color: #ffffff;
+    }
+
+    /* Sidebar menu styles */
+    .sidebar .nav-item .nav-link {
+      color: #000000;
+      font-weight: 500;
+      transition: all 0.3s ease;
+    }
+
+    .sidebar .nav-item .nav-link:hover,
+    .sidebar .nav-item .nav-link.active {
+      color: #1a472a;
+      background: rgba(26, 71, 42, 0.1);
+    }
+
+    .sidebar .nav-item .nav-link i {
+      color: #000000;
+      transition: all 0.3s ease;
+    }
+
+    .sidebar .nav-item .nav-link:hover i,
+    .sidebar .nav-item .nav-link.active i {
+      color: #1a472a;
+    }
+
+    /* Enhanced Dashboard Card */
+    .dashboard-card {
+      border: none;
+      background: linear-gradient(to bottom right, #ffffff, #f8f9fa);
+      box-shadow: 0 0 25px rgba(0,0,0,0.08);
+      transition: all 0.3s ease;
+      border-radius: 15px;
+    }
+
+    .dashboard-card:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 8px 30px rgba(0,0,0,0.12);
+    }
+
+    .card-title {
+      color: var(--primary-color);
+      font-weight: 700;
+      border-bottom: 3px solid var(--secondary-color);
+      padding-bottom: 15px;
+      margin-bottom: 25px;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+    }
+
+    /* Colorful Location Selector */
+    .location-selector {
+      background: linear-gradient(135deg, #ffffff, var(--light-bg));
+      border-radius: 15px;
+      padding: 25px;
+      margin-bottom: 30px;
+      border: 2px solid rgba(46, 204, 113, 0.1);
+    }
+
+    .form-select {
+      border: 2px solid #e0e0e0;
+      border-radius: 10px;
+      padding: 12px;
+      font-size: 1rem;
+      transition: all 0.3s ease;
+      background-color: white;
+    }
+
+    .form-select:focus {
+      border-color: var(--secondary-color);
+      box-shadow: 0 0 0 0.25rem rgba(46, 204, 113, 0.25);
+    }
+
+    .form-label {
+      font-weight: 600;
+      color: var(--dark-bg);
+      margin-bottom: 10px;
+      display: flex;
+      align-items: center;
+      font-size: 1.1rem;
+    }
+
+    .form-label i {
+      color: var(--secondary-color);
+      margin-right: 8px;
+    }
+
+    /* Enhanced Camera Grid */
+    .camera-grid {
+      gap: 25px;
+    }
+
+    .camera-card {
+      border: none;
+      border-radius: 15px;
+      overflow: hidden;
+      background: white;
+      box-shadow: 0 4px 20px rgba(0,0,0,0.08);
+      transition: all 0.3s ease;
+    }
+
+    .camera-card:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 8px 25px rgba(0,0,0,0.15);
+    }
+
+    .camera-feed {
+      position: relative;
+      background: #000;
+      border-radius: 12px;
+      overflow: hidden;
+    }
+
+    .camera-controls {
+      padding: 15px;
+      background: linear-gradient(to right, #f8f9fa, #ffffff);
+      border-top: 1px solid rgba(0,0,0,0.05);
+    }
+
+    .btn-control {
+      padding: 8px 15px;
+      border-radius: 8px;
+      transition: all 0.3s ease;
+      border: 2px solid transparent;
+      background: white;
+    }
+
+    .btn-control:hover {
+      background: var(--secondary-color);
+      color: white;
+      transform: translateY(-2px);
+    }
+
+    /* Enhanced Badge Styles */
+    .badge {
+      padding: 8px 16px;
+      font-weight: 600;
+      letter-spacing: 0.5px;
+      border-radius: 8px;
+    }
+
+    .badge-camera {
+      background: linear-gradient(45deg, var(--danger-color), #ff6b6b);
+      box-shadow: 0 2px 10px rgba(231, 76, 60, 0.3);
+    }
+
+    .badge-location {
+      background: linear-gradient(45deg, var(--dark-bg), #34495e);
+      box-shadow: 0 2px 10px rgba(44, 62, 80, 0.3);
+    }
+
+    /* Enhanced Status Indicator */
+    .status-live {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-weight: 600;
+      color: var(--success-color);
+      padding: 6px 12px;
+      border-radius: 20px;
+      background: rgba(39, 174, 96, 0.1);
+    }
+
+    .status-live i {
+      font-size: 10px;
+      animation: pulse 2s infinite;
+    }
+
+    @keyframes pulse {
+      0% { opacity: 1; transform: scale(1); }
+      50% { opacity: 0.5; transform: scale(1.2); }
+      100% { opacity: 1; transform: scale(1); }
+    }
+
+    /* Enhanced Loading Animation */
+    .loading-overlay {
+      background: rgba(0,0,0,0.8);
+      backdrop-filter: blur(4px);
+    }
+
+    .loading-spinner {
+      width: 50px;
+      height: 50px;
+      border: 4px solid rgba(255,255,255,0.3);
+      border-top: 4px solid var(--secondary-color);
+      border-radius: 50%;
+      animation: spin 1s linear infinite;
+    }
+
+    @keyframes spin {
+      0% { transform: rotate(0deg); }
+      100% { transform: rotate(360deg); }
+    }
+
+    /* Responsive Adjustments */
+    @media (max-width: 768px) {
+      .camera-grid {
+        gap: 15px;
+      }
+
+      .form-select {
+        padding: 10px;
+      }
+
+      .badge {
+        padding: 6px 10px;
+        font-size: 0.8rem;
+      }
+    }
+  </style>
+
+</head>
+
+<body>
+
+  <!-- ======= Header ======= -->
+  <header id="header" class="header fixed-top d-flex align-items-center">
+    <div class="d-flex align-items-center justify-content-start">
+      <a href="{% url 'home' %}" class="logo">
+        <img src="{% static 'images/logo1.webp' %}" alt="AI Animal Detector Logo" class="logo-img">
+        <span>Animal Detector</span>
+    </a>
+    </div><!-- End Logo -->
+
+    <i class="bi bi-list toggle-sidebar-btn text-white me-3"></i>
+
+    <nav class="header-nav ms-auto">
+      <ul class="d-flex align-items-center">
+        <li class="nav-item dropdown pe-3">
+          <ul class="dropdown-menu dropdown-menu-end dropdown-menu-arrow profile">
+            <li class="dropdown-header">
+              <h6>Kevin Anderson</h6>
+              <span>Web Designer</span>
+            </li>
+            <li>
+              <hr class="dropdown-divider">
+            </li>
+
+            <li>
+              <a class="dropdown-item d-flex align-items-center" href="users-profile.html">
+                <i class="bi bi-person"></i>
+                <span>My Profile</span>
+              </a>
+            </li>
+            <li>
+              <hr class="dropdown-divider">
+            </li>
+
+            <li>
+              <a class="dropdown-item d-flex align-items-center" href="users-profile.html">
+                <i class="bi bi-gear"></i>
+                <span>Account Settings</span>
+              </a>
+            </li>
+            <li>
+              <hr class="dropdown-divider">
+            </li>
+
+            <li>
+              <a class="dropdown-item d-flex align-items-center" href="pages-faq.html">
+                <i class="bi bi-question-circle"></i>
+                <span>Need Help?</span>
+              </a>
+            </li>
+            <li>
+              <hr class="dropdown-divider">
+            </li>
+
+            <li>
+              <a class="dropdown-item d-flex align-items-center" href="logout.html" onclick="return confirm('Are you sure you want to logout?');">
+                <i class="bi bi-box-arrow-right"></i>
+                <span>Sign Out</span>
+              </a>
+            </li>
+          </ul><!-- End Profile Dropdown Items -->
+        </li><!-- End Profile Nav -->
+      </ul>
+    </nav><!-- End Icons Navigation -->
+
+  </header><!-- End Header -->
+
+  <!-- ======= Sidebar ======= -->
+  <aside id="sidebar" class="sidebar">
+
+    <ul class="sidebar-nav" id="sidebar-nav">
+
+      <li class="nav-item">
+        <a class="nav-link" href="{% url 'admin-dashboard' %}">
+          <i class="bi bi-grid"></i>
+          <span>Dashboard</span>
+        </a>
+      </li><!-- End Dashboard Nav -->
+
+      <li class="nav-item">
+        <a class="nav-link" href="{% url 'livemonitoring' %}">
+          <i class="bi bi-camera-video"></i>
+          <span>Live Monitoring</span>
+        </a>
+      </li><!-- End Live Monitoring Nav -->
+
+      <li class="nav-item">
+        <a class="nav-link" href="{% url 'alerts' %}">
+          <i class="bi bi-bell"></i>
+          <span>Alerts</span>
+        </a>
+      </li><!-- End Alerts Nav -->
+
+      <li class="nav-item">
+        <a class="nav-link" href="{% url 'analysis' %}">
+          <i class="bi bi-graph-up"></i>
+          <span>Analysis</span>
+        </a>
+
+        <li class="nav-item">
+          <a class="nav-link" href="{% url 'index' %}">
+            <i class="bi bi-search"></i>
+            <span>Detect</span>
+          </a>
+        </li>
+
+        
+
+      </li><!-- End Analysis Nav -->
+
+      <li class="nav-heading mt-3">Account</li>
+      <li class="nav-item">
+        <a class="nav-link" href="{% url 'home' %}" onclick="return confirm('Are you sure you want to logout?');">
+          <i class="bi bi-box-arrow-right"></i>
+          <span>Logout</span>
+        </a>
+      </li><!-- End Logout Nav -->
+
+    </ul>
+
+  </aside><!-- End Sidebar-->
+
+  <main id="main" class="main">
+
+    <div class="pagetitle">
+      <h1>Dashboard</h1>
+      <nav>
+        <ol class="breadcrumb">
+          <li class="breadcrumb-item"><a href="{% url 'admin-dashboard' %}">Home</a></li>
+          <li class="breadcrumb-item active">live-monitoring</li>
+        </ol>
+      </nav>
+    </div><!-- End Page Title -->
+
+    <section class="section dashboard">
+      <div class="row">
+        <div class="col-12">
+          <div class="card dashboard-card">
+            <div class="card-body">
+              <h5 class="card-title">Forest Surveillance System</h5>
+              
+              <!-- Location Selection -->
+              <div class="location-selector">
+                <div class="row">
+                  <!-- District Selection -->
+                  <div class="col-md-6 mb-4">
+                    <label class="form-label">
+                      <i class="bi bi-geo-alt-fill me-2"></i>Select District
+                    </label>
+                    <select class="form-select" id="districtSelect" required>
+                      <option value="">Choose District</option>
+                      <option value="Coimbatore">Coimbatore</option>
+                      <option value="Dharmapuri">Dharmapuri</option>
+                      <option value="Dindigul">Dindigul</option>
+                      <option value="Erode">Erode</option>
+                      <option value="Kanyakumari">Kanyakumari</option>
+                      <option value="Krishnagiri">Krishnagiri</option>
+                      <option value="Namakkal">Namakkal</option>
+                      <option value="Nilgiris">Nilgiris</option>
+                      <option value="Salem">Salem</option>
+                      <option value="Tenkasi">Tenkasi</option>
+                      <option value="Theni">Theni</option>
+                      <option value="Tirunelveli">Tirunelveli</option>
+                      <option value="Tiruppur">Tiruppur</option>
+                      <option value="Tiruvannamalai">Tiruvannamalai</option>
+                      <option value="Vellore">Vellore</option>
+                    </select>
+                  </div>
+
+                  <!-- Forest Area Selection -->
+                  <div class="col-md-6 mb-4 d-none" id="forestAreaContainer">
+                    <label class="form-label">
+                      <i class="bi bi-tree-fill me-2"></i>Select Forest Area
+                    </label>
+                    <select class="form-select" id="forestAreaSelect" required>
+                      <option value="">Choose Forest Area</option>
+                    </select>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Camera Credentials Form -->
+              <div id="cameraFormContainer" class="d-none">
+                <div class="card dashboard-card">
+                  <div class="card-body">
+                    <h5 class="card-title">Camera Configuration</h5>
+                    <form id="cameraCredentialsForm" class="mt-4">
+                      <div class="row">
+                        <div class="col-md-6 mb-3">
+                          <label class="form-label">
+                            <i class="bi bi-camera-fill me-2"></i>Camera IP Address
+                          </label>
+                          <input type="text" class="form-control" id="cameraIp" name="cameraIp" 
+                                 placeholder="Enter IP Address (e.g., 192.168.1.100)" required>
+                        </div>
+                        <div class="col-md-6 mb-3">
+                          <label class="form-label">
+                            <i class="bi bi-person-fill me-2"></i>Username
+                          </label>
+                          <input type="text" class="form-control" id="cameraUsername" name="cameraUsername" 
+                                 placeholder="Enter camera username" required>
+                        </div>
+                        <div class="col-md-6 mb-3">
+                          <label class="form-label">
+                            <i class="bi bi-key-fill me-2"></i>Password
+                          </label>
+                          <input type="password" class="form-control" id="cameraPassword" name="cameraPassword" 
+                                 placeholder="Enter camera password" required>
+                        </div>
+                        <div class="col-md-6 mb-3">
+                          <label class="form-label">
+                            <i class="bi bi-tag-fill me-2"></i>Camera Name
+                          </label>
+                          <input type="text" class="form-control" id="cameraName" name="cameraName" 
+                                 placeholder="Enter a name for this camera" required>
+                        </div>
+                        <div class="col-md-6 mb-3">
+                          <label class="form-label">
+                            <i class="bi bi-person-fill me-2"></i>Streaming type
+                          </label>
+                          <input type="text" class="form-control" id="cameraUsername" name="cameraUsername" 
+                                 placeholder="Enter camera username" required>
+                        </div>
+                        
+                      </div>
+                      <div class="text-end mt-3">
+                        <button type="submit" class="btn btn-success">
+                          <i class="bi bi-plus-circle me-2"></i>Add Camera
+                        </button>
+                      </div>
+                    </form>
+                  </div>
+                </div>
+              </div>
+
+              <script>
+                document.addEventListener('DOMContentLoaded', function() {
+                  const districtSelect = document.getElementById('districtSelect');
+                  const forestAreaContainer = document.getElementById('forestAreaContainer');
+                  const forestAreaSelect = document.getElementById('forestAreaSelect');
+                  const cameraFormContainer = document.getElementById('cameraFormContainer');
+                  const cameraCredentialsForm = document.getElementById('cameraCredentialsForm');
+
+                  // Forest areas by district
+                  const forestAreas = {
+                    'Coimbatore': [
+                      'Marudhamalai',  
+                      'Boluvampatti',
+                      'Madukkarai',
+                      'Siruvani',
+                      'Walayar',
+                      'Anaikatti',
+                      'Silent Valley National Park',
+                      'Sathyamangalam Tiger Reserve',
+                      'Thadagam Valley Forest',
+                      'Monkey Falls',
+                    ]
+                    // Add other districts and their forest areas here
+                  };
+
+                  // Handle district selection
+                  districtSelect.addEventListener('change', function() {
+                    const selectedDistrict = this.value;
+                    if (selectedDistrict) {
+                      forestAreaContainer.classList.remove('d-none');
+                      forestAreaSelect.innerHTML = '<option value="">Choose Forest Area</option>';
+                      
+                      forestAreas[selectedDistrict]?.forEach(area => {
+                        const option = document.createElement('option');
+                        option.value = area;
+                        option.textContent = area;
+                        forestAreaSelect.appendChild(option);
+                      });
+                    } else {
+                      forestAreaContainer.classList.add('d-none');
+                      cameraFormContainer.classList.add('d-none');
+                    }
+                  });
+
+                  // Handle forest area selection
+                  forestAreaSelect.addEventListener('change', function() {
+                    const selectedArea = this.value;
+                    if (selectedArea) {
+                      cameraFormContainer.classList.remove('d-none');
+                    } else {
+                      cameraFormContainer.classList.add('d-none');
+                    }
+                  });
+
+                  // Handle form submission
+                  cameraCredentialsForm.addEventListener('submit', function(e) {
+                    e.preventDefault();
+                    
+                    const cameraData = {
+                      district: districtSelect.value,
+                      forestArea: forestAreaSelect.value,
+                      ip: document.getElementById('cameraIp').value,
+                      username: document.getElementById('cameraUsername').value,
+                      password: document.getElementById('cameraPassword').value,
+                      name: document.getElementById('cameraName').value
+                    };
+
+                    // Store the camera data in localStorage
+                    let cameras = JSON.parse(localStorage.getItem('cameras') || '[]');
+                    cameras.push(cameraData);
+                    localStorage.setItem('cameras', JSON.stringify(cameras));
+
+                    // Reset form
+                    this.reset();
+                    alert('Camera added successfully!');
+                  });
+                });
+              </script>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>YOLO Animal Detection</title>
+    
+</head>
+
+
+  </main>
+  
+  <!-- Add Modal for YouTube URL Input -->
+  <div class="modal fade" id="youtubeUrlModal" tabindex="-1" aria-labelledby="youtubeUrlModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="youtubeUrlModalLabel">Enter YouTube URL</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body">
+          <div class="form-group">
+            <label for="youtubeUrl" class="form-label">YouTube URL:</label>
+            <input type="text" class="form-control" id="youtubeUrl" placeholder="Enter YouTube URL">
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+          <button type="button" class="btn btn-primary" id="saveYoutubeUrl">Save</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ======= Footer ======= -->
+  <footer id="footer" class="footer">
+    <div class="container">
+      <div class="copyright">
+        &copy; Copyright <strong><span>Tamil Nadu Forest Department</span></strong>. All Rights Reserved
+      </div>
+    </div>
+  </footer><!-- End Footer -->
+
+  <a href="#" class="back-to-top d-flex align-items-center justify-content-center"><i class="bi bi-arrow-up-short"></i></a>
+
+  
+
+  <!-- Template Main JS File -->
+  <script src="../static/js/main.js"></script>
+  
+  <!-- Add Bootstrap JS -->
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
+
+  <script>
+    document.addEventListener('DOMContentLoaded', function() {
+      const districtSelect = document.getElementById('districtSelect');
+      const forestAreaContainer = document.getElementById('forestAreaContainer');
+      const forestAreaSelect = document.getElementById('forestAreaSelect');
+      const cameraContainer = document.getElementById('cameraContainer');
+      const cameraGrid = document.getElementById('cameraGrid');
+      let youtubeUrl = ''; // Store YouTube URL
+
+      // Initialize modal elements
+      const youtubeUrlModal = new bootstrap.Modal(document.getElementById('youtubeUrlModal'));
+      const saveYoutubeUrlBtn = document.getElementById('saveYoutubeUrl');
+      let currentCameraFrame = null;
+
+      // Save YouTube URL
+      saveYoutubeUrlBtn.addEventListener('click', function() {
+        const url = document.getElementById('youtubeUrl').value;
+        if (url && currentCameraFrame) {
+          // Extract video ID from YouTube URL
+          const videoId = extractYoutubeVideoId(url);
+          if (videoId) {
+            // Update iframe src with embedded YouTube URL
+            currentCameraFrame.src = `https://www.youtube.com/embed/${videoId}`;
+            youtubeUrlModal.hide();
+          } else {
+            alert('Please enter a valid YouTube URL');
+          }
+        }
+      });
+
+      // Function to extract YouTube video ID
+      function extractYoutubeVideoId(url) {
+        const regExp = /^.*(youtu.be\/|v\/|u\/\w\/|embed\/|watch\?v=|\&v=)([^#\&\?]*).*/;
+        const match = url.match(regExp);
+        return (match && match[2].length === 11) ? match[2] : null;
+      }
+
+      // Forest areas by district
+      const forestAreas = {
+        'Coimbatore': [
+          'Marudhamalai',  
+          'Boluvampatti ',
+          'Madukkarai',
+          'Siruvani ',
+          'Walayar ',
+          'Anaikatti ',
+          'Silent Valley National Park',
+          'Sathyamangalam Tiger Reserve',
+          'Thadagam Valley Forest',
+          'Monkey Falls',
+          
+        ]
+        // Add other districts and their forest areas here
+      };
+
+      // Handle district selection
+      districtSelect.addEventListener('change', function() {
+        const selectedDistrict = this.value;
+        if (selectedDistrict) {
+          // Show forest area selection and populate options
+          forestAreaContainer.classList.remove('d-none');
+          forestAreaSelect.innerHTML = '<option value="">Choose Forest Area</option>';
+          
+          forestAreas[selectedDistrict]?.forEach(area => {
+            const option = document.createElement('option');
+            option.value = area;
+            option.textContent = area;
+            forestAreaSelect.appendChild(option);
+          });
+        } else {
+          // Hide forest area selection and camera container
+          forestAreaContainer.classList.add('d-none');
+          cameraContainer.classList.add('d-none');
+        }
+      });
+
+      // Handle forest area selection
+      forestAreaSelect.addEventListener('change', function() {
+        const selectedArea = this.value;
+        if (selectedArea) {
+          cameraContainer.classList.remove('d-none');
+          cameraGrid.innerHTML = ''; // Clear existing cameras
+          
+          // Add example trail cameras for the selected area
+          for (let i = 1; i <= 3; i++) {
+            const cameraHtml = `
+              <div class="col-lg-4 col-md-6">
+                <div class="card camera-card">
+                  <div class="card-body p-2">
+                    <div class="camera-feed position-relative">
+                      <iframe 
+                        class="img-fluid w-100 camera-iframe"
+                        style="aspect-ratio: 16/9; border: none;"
+                        src="${i === 1 ? 'about:blank' : `https://your-camera-stream-url/${selectedArea}/camera${i}`}"
+                        allowfullscreen
+                        data-camera-number="${i}">
+                      </iframe>
+                      <div class="loading-overlay d-none">
+                        <div class="loading-spinner"></div>
+                      </div>
+                      <div class="position-absolute top-0 start-0 m-2">
+                        <span class="badge badge-camera">Trail Camera ${i}</span>
+                      </div>
+                      <div class="position-absolute bottom-0 start-0 m-2">
+                        <span class="badge badge-location">
+                          <i class="bi bi-geo-alt"></i> ${selectedArea}
+                        </span>
+                      </div>
+                    </div>
+                    <div class="camera-controls d-flex justify-content-between align-items-center">
+                      <div class="btn-group">
+                        <button type="button" class="btn btn-control" title="Zoom">
+                          <i class="bi bi-zoom-in"></i>
+                        </button>
+                        <button type="button" class="btn btn-control" title="Record">
+                          <i class="bi bi-record-circle"></i>
+                        </button>
+                        <button type="button" class="btn btn-control" title="Settings">
+                          <i class="bi bi-gear"></i>
+                        </button>
+                      </div>
+                      <div class="status-live text-success">
+                        <i class="bi bi-circle-fill"></i>
+                        Live
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            `;
+            cameraGrid.insertAdjacentHTML('beforeend', cameraHtml);
+          }
+
+          // Add click event for Camera 1
+          const camera1Frame = cameraGrid.querySelector('iframe[data-camera-number="1"]');
+          if (camera1Frame) {
+            camera1Frame.parentElement.addEventListener('click', function() {
+              currentCameraFrame = camera1Frame;
+              document.getElementById('youtubeUrl').value = ''; // Clear previous URL
+              youtubeUrlModal.show();
+            });
+          }
+        } else {
+          cameraContainer.classList.add('d-none');
+        }
+      });
+    });
+  </script>
+
+  <script>
+    // Add this script before the closing body tag
+    document.addEventListener('DOMContentLoaded', function() {
+      const toggleSidebarBtn = document.querySelector('.toggle-sidebar-btn');
+      const body = document.querySelector('body');
+      
+      // Function to toggle sidebar
+      function toggleSidebar() {
+        body.classList.toggle('toggle-sidebar');
+        
+        // Save state to localStorage
+        const sidebarState = body.classList.contains('toggle-sidebar');
+        localStorage.setItem('sidebarState', sidebarState);
+      }
+      
+      // Add click event listener
+      toggleSidebarBtn.addEventListener('click', toggleSidebar);
+      
+      // Check and apply saved state on page load
+      const savedState = localStorage.getItem('sidebarState');
+      if (savedState === 'true') {
+        body.classList.add('toggle-sidebar');
+      }
+    });
+  </script>
+
+</body>
+
+</html>
