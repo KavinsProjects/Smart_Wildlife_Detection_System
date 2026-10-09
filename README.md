@@ -1,5 +1,7 @@
 # 🐘 Smart Wildlife Detection System
 
+#### For more Read [like](https://srec.ac.in/coin/blognewsdetails/national-level-hours-hackathon)
+
 An intelligent wildlife detection system designed to help address **Human–Animal Conflict (HAC)** through early wildlife detection and monitoring.
 
 ## 🌿 About the Project
